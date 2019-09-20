@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# coding:utf-8
+# -*- coding: utf-8 -*-
 
 from flask import Flask,render_template,request
 import difflib
@@ -12,6 +11,9 @@ import subprocess
 # sys.setdefaultencoding('utf-8')
 
 app = Flask(__name__)
+
+print ('11111')
+print ('中文')
 
 def disk_view():
     diskmount = subprocess.getoutput("lsblk -lf ")
