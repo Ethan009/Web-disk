@@ -127,9 +127,9 @@ def hello_world():
     Diskdata,Diskdata_pv=data_to_json()
     if request.method == 'POST':
         disk_Partition=request.values.get('hidden')
-        print ('122' , type(disk_Partition),disk_Partition)
+        #print ('122' , type(disk_Partition),disk_Partition)
         disk_pvcreate(disk_Partition)
-    
+
     return render_template('index.html',Diskdata=Diskdata,Diskdata_pv=Diskdata_pv)
 
 dict_items=([('sba',[])])
