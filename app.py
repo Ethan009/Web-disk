@@ -12,9 +12,6 @@ import subprocess
 
 app = Flask(__name__)
 
-print ('11111')
-print ('中文')
-
 def disk_view():
     diskmount = subprocess.getoutput("lsblk -lf ")
     return diskmount
@@ -96,6 +93,7 @@ def data_to_json():
         dic_data_pv['disk']=key
         dic_data['options'] = []
         dic_data_pv['options'] = []
+        dic_data_pv['options'].append(key)
         #for lis_value in values:
         for value in lis_value:
             #print (type(value),value)
@@ -105,7 +103,8 @@ def data_to_json():
             dic_child_data['file_name']=value[2]
             dic_child_data['status']=value[3]
             dic_data['options'].append(dic_child_data)
-            dic_data_pv['options'].append(value[0])
+            if not value[1] :
+                dic_data_pv['options'].append(value[0])
         lis_data.append(dic_data)
         lis_data_pv.append(dic_data_pv)
     #print (lis_data)
@@ -116,12 +115,9 @@ def disk_pvcreate(str_disk):
     str_disk_name_all=""
     lis_disk=str_disk.split(',')
     for disk in lis_disk:
-        print ('12',lis_disk)
         if disk:
             str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
-    print ('name',str_disk_name_all)
     subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
-    print ('OK')
 
 
 @app.route('/',methods=['GET','POST'])
