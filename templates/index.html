@@ -171,8 +171,8 @@
            <input type="hidden" id="hidden" name="hidden" value=""
                     placeholder="文件系统类型" />
           <div class="btn-list">
-            <button type="submit" class="btn btn-primary" id="">确定</button>
-            <button type="button" class="btn btn-primary" >取消</button>
+            <button type="submit" class="btn btn-primary" >确定</button>
+            <button type="button" class="btn btn-primary" id="test1">取消</button>
           </div>
          
         </form>
@@ -196,7 +196,7 @@
       type: 1,
       area: ['600px', '360px'],
       shadeClose: true,
-      content: '\<\div style="padding:20px;">自定义内容\<\/div>'
+      content: '\<\div style="padding:20px;">{{Diskdata_pv|safe}}\<\/div>'
     });
   });
 </script>
@@ -233,6 +233,7 @@ for(let i = 0; i < data_show.length; i++) {
 }
 radioWrap.append(roiadhtml)
 </script>
+
 <script type="text/javascript">
     $("input[name='disk-name']").change(function(){
       var result = ' ';

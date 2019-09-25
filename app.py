@@ -119,6 +119,9 @@ def disk_pvcreate(str_disk):
             str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
     subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
 
+@app.route('/pvcreate-data',methods=['GET','POST'])
+def pvcreate_data():
+
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
@@ -132,7 +135,6 @@ def hello_world():
 
     return render_template('index.html',Diskdata=Diskdata,Diskdata_pv=Diskdata_pv)
 
-dict_items=([('sba',[])])
 
 
 if __name__ == '__main__':
