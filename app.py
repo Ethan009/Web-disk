@@ -121,7 +121,7 @@ def disk_pvcreate(str_disk):
 
 @app.route('/pvcreate-data',methods=['GET','POST'])
 def pvcreate_data():
-
+    pass
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
