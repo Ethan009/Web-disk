@@ -6,6 +6,7 @@ import re
 import os
 import sys
 import subprocess
+import pexpect
 
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
@@ -113,11 +114,12 @@ def data_to_json():
 def disk_pvcreate(str_disk):
     str_disk_name='/dev/'
     str_disk_name_all=""
-    lis_disk=str_disk.split(',')
-    for disk in lis_disk:
-        if disk:
-            str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
-    subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
+    if str_disk:
+        lis_disk=str_disk.split(',')
+        for disk in lis_disk:
+            if disk:
+                str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
+        subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
 
 
 @app.route('/',methods=['GET','POST'])
