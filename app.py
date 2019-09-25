@@ -129,10 +129,70 @@ def hello_world():
         disk_Partition=request.values.get('hidden')
         #print ('122' , type(disk_Partition),disk_Partition)
         disk_pvcreate(disk_Partition)
+        ###Paul##
+        yjfq = request.values.get('yjfq')
+        yufenqu = request.values.get('yufenqu')
+        fengquhao = request.values.get('fengquhao')
+        start = request.values.get('start')
+        end = request.values.get('end')
+        ygzcpm = request.values.get('ygzcpm')
+        wjjlj = request.values.get('wjjlj')
+        hidden = request.values.get('hidden')
+        cipanming = request.values.get('cipanming')
+        xxx = request.values.get('xxx')
 
-    return render_template('index.html',Diskdata=Diskdata,Diskdata_pv=Diskdata_pv)
+        # 格式化文件类型
+        if hidden and cipanming:
+            os.popen("mkfs.%s /dev/%s " % (hidden, cipanming))
+            # print("格式化成功")
+        else:
+            # print("格式化失败")
+            pass
 
-dict_items=([('sba',[])])
+        # 一键分区
+        # print(yjfq)
+        if yjfq:
+            child = pexpect.spawn("sudo fdisk /dev/%s" % (yjfq), timeout=3)
+            child.sendline('n')
+            child.sendline('\n')
+            child.sendline('\n')
+            child.sendline('\n')
+            child.sendline('\n')
+            child.sendline('w')
+            print("Successful to Partition")
+        else:
+            # print("faild to Partition")
+            pass
+
+        # 手动分区
+        if yufenqu and fengquhao and start and end:
+            child = pexpect.spawn("sudo fdisk /dev/%s" % (yufenqu), timeout=3)
+            child.sendline('n')
+            child.sendline('p')
+            child.sendline('%s' % (fengquhao))
+            child.sendline('%s' % (start))
+            child.sendline('%s' % (end))
+            child.sendline('w')
+            print("Successful to Partition")
+        else:
+            # print("faild to Partition")
+            pass
+
+        # 磁盘挂载
+        if ygzcpm and wjjlj:
+            os.system("mkdir %s" % (wjjlj))
+            print("创建文件夹成功")
+            os.system("mount /dev/%s %s" % (ygzcpm, wjjlj))
+            print("挂载成功")
+        else:
+            pass
+
+    data = datapc()
+    print(data)
+    data_key = data.keys()
+    return render_template('index.html',Diskdata=Diskdata,Diskdata_pv=Diskdata_pv, data_key=data_key,
+                           data=data)
+
 
 
 if __name__ == '__main__':
