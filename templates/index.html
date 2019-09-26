@@ -191,12 +191,16 @@
 </body>
 
 <script>
+    const data = {{Diskdata_pv|safe}}
+
     $('#test1').on('click', function(){
     layer.open({
       type: 1,
       area: ['600px', '360px'],
       shadeClose: true,
-      content: '\<\div style="padding:20px;">{{Diskdata_pv|safe}}\<\/div>'
+      content: '\<\div style="padding:20px;">
+      {{Diskdata_pv}}
+      \<\/div>'
     });
   });
 </script>
