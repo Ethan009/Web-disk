@@ -110,6 +110,8 @@ def data_to_json():
     #print (lis_data)
     return lis_data,lis_data_pv
 
+
+
 def disk_pvcreate(str_disk):
     str_disk_name='/dev/'
     str_disk_name_all=""
@@ -119,11 +121,15 @@ def disk_pvcreate(str_disk):
             str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
     subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
 
+
+
 @app.route('/pvcreate-data',methods=['GET','POST'])
 def pvcreate_data():
     if request.method == 'POST':
         disk_data=data_to_json()[0]
     return disk_data
+
+
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
