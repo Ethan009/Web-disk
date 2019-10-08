@@ -84,8 +84,6 @@ def data_to_json():
     Diskdata_pc = datapc()
     keys=Diskdata_pc.keys()
     values=Diskdata_pc.values()
-    #print ('keys:',type(keys),keys)
-    #print ('values:',type(values),values)
     for key,lis_value in zip(keys,values):
         dic_data={}
         dic_data_pv={}
@@ -93,10 +91,7 @@ def data_to_json():
         dic_data_pv['disk']=key
         dic_data['options'] = []
         dic_data_pv['options'] = []
-        dic_data_pv['options'].append(key)
-        #for lis_value in values:
         for value in lis_value:
-            #print (type(value),value)
             dic_child_data={}
             dic_child_data['name']=value[0]
             dic_child_data['file_system']=value[1]
