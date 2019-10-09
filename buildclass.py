@@ -1,9 +1,6 @@
 #coding:utf-8
 import pexpect
 
-#規則：
-
-
 
 class shell_pexpect:
     def __init__(self,cmd,partition='n',select='\n',partition_number='\n',sector='\n',partition_size='\n',write_cmd='w'):
@@ -21,23 +18,6 @@ class shell_pexpect:
         except pexpect.EOF or pexpect.TIMEOUT:
             return self.data
 
-    # def disk_single_partition(self):
-    #     lis_info=[['Command (m for help)'],['Select(default p)'],['Partition number'],['First sector'],['Last sector'],['Command (m for help)']]
-    #     lis_info_CN=[['命令(输入m获取帮助)'],['Select(default p)'],[('分区号')],['First sector'],['Last sector'],['命令(输入m获取帮助)']]
-    #     lis_shell=['n','\n','\n','\n','\n','w']
-    #     try:
-    #         for i,j in lis_info,lis_shell:
-    #             if self.child.expect(i)==self.value:
-    #                 self.child.sendline(j)
-    #             else:
-    #                 return 'partition failed'
-    #                 self.child.close()
-    #     except pexpect.EOF or pexpect.TIMEOUT:
-    #         self.child.close()
-    #         return'partition failed'
-    #     return 'partition successful'
-    # def disk_manual_partition(self):
-    #     pass
 
 #返回值--0：進入幫助頁  1：無此文件
     def enter_command(self):
