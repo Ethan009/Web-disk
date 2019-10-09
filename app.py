@@ -84,8 +84,6 @@ def data_to_json():
     Diskdata_pc = datapc()
     keys=Diskdata_pc.keys()
     values=Diskdata_pc.values()
-    #print ('keys:',type(keys),keys)
-    #print ('values:',type(values),values)
     for key,lis_value in zip(keys,values):
         dic_data={}
         dic_data_pv={}
@@ -93,10 +91,7 @@ def data_to_json():
         dic_data_pv['disk']=key
         dic_data['options'] = []
         dic_data_pv['options'] = []
-        dic_data_pv['options'].append(key)
-        #for lis_value in values:
         for value in lis_value:
-            #print (type(value),value)
             dic_child_data={}
             dic_child_data['name']=value[0]
             dic_child_data['file_system']=value[1]
@@ -110,6 +105,8 @@ def data_to_json():
     #print (lis_data)
     return lis_data,lis_data_pv
 
+
+
 def disk_pvcreate(str_disk):
     str_disk_name='/dev/'
     str_disk_name_all=""
@@ -119,9 +116,18 @@ def disk_pvcreate(str_disk):
             str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
     subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
 
+
+
 @app.route('/pvcreate-data',methods=['GET','POST'])
 def pvcreate_data():
-    pass
+    if request.method == 'POST':
+        disk_data=data_to_json()[0]
+    return disk_data
+
+@app.route('/layer_table',methods=['GET','POST'])
+def layer_table():
+    Diskdata,Diskdata_pv=data_to_json()
+    return render_template('test1.html',Diskdata=Diskdata)
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
