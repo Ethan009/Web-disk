@@ -124,7 +124,10 @@ def pvcreate_data():
         disk_data=data_to_json()[0]
     return disk_data
 
-
+@app.route('/layer_table',methods=['GET','POST'])
+def layer_table():
+    Diskdata,Diskdata_pv=data_to_json()
+    return render_template('test1.html',Diskdata=Diskdata)
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
