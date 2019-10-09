@@ -183,8 +183,8 @@
            <input type="hidden" id="hidden" name="hidden" value=""
                     placeholder="文件系统类型" />
           <div class="btn-list">
-            <button type="submit" class="btn btn-primary" id="">确定</button>
-            <button type="button" class="btn btn-primary" >取消</button>
+            <button type="submit" class="btn btn-primary" >确定</button>
+            <button type="button" class="btn btn-primary" id="test1">取消</button>
           </div>
          
         </form>
@@ -382,15 +382,16 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src={{url_for('static',filename="layer/layer.js")}}></script>
 </body>
-
+<!--url_for('static',filename="test/test1.html")-->
 <script>
     $('#test1').on('click', function(){
-    layer.open({
-      type: 1,
-      area: ['600px', '360px'],
-      shadeClose: true,
-      content: '\<\div style="padding:20px;">自定义内容\<\/div>'
-    });
+	layer.open({
+	  type: 2,
+	  area: ['700px', '450px'],
+	  fixed: false,
+	  maxmin: true,
+	  content: '{{url_for("layer_table")}}'
+	});
   });
 </script>
 
@@ -426,6 +427,7 @@ for(let i = 0; i < data_show.length; i++) {
 }
 radioWrap.append(roiadhtml)
 </script>
+
 <script type="text/javascript">
     $("input[name='disk-name']").change(function(){
       var result = ' ';
