@@ -1,6 +1,12 @@
 #coding:utf-8
 import pexpect
 
+class myerorr(Exception):
+    pass
+
+class Faleserorr(myerorr):
+    pass
+
 class pe(object):
     """docstring for pe"""
     def __init__(self, cmd):
@@ -20,10 +26,11 @@ class pe(object):
 
 class p_disk(pe):
     """docstring for p_disk"""
-    def __init__(self, disk):
+    def __init__(self, disk, size=None):
         # super(p_disk, self).__init__()
         # self.arg = arg
         self.objCMD = pexpect.spawn('fdisk /dev/%s' % str(disk))
+        self.size=size
         # self.exist_part =
 
     def start(self):
@@ -59,13 +66,19 @@ class p_disk(pe):
         if self.expect('Created a new partition'):
             return True
 
+    def confirm_size(self,size):
+        self.sendline(str(size))
+        if self.expect('Created a new partition'):
+            return True
+
     def partition_write(self):
         self.sendline('w')
         if self.expect('The partition table has been altered'):
             return True
 
     def create_only_one_part(self):
-        if self.start():
+        try:
+            self.start()
             self.new_part()
             self.partition_munber()
             self.first_sector()
@@ -73,7 +86,19 @@ class p_disk(pe):
             self.confirm()
             self.partition_write()
             print ('successful create partition')
+        except Exception:
+            print ('partition fales')
 
 
-    def create_fix_size_part(sefl):
-        pass
+    def create_fix_size_part(self,size):
+        try:
+            self.start()
+            self.new_part()
+            self.partition_munber()
+            self.first_sector()
+            self.last_sector()
+            self.confirm_size(str(self.size))
+            self.partition_write()
+            print('successful create partition')
+        except Exception:
+            print ('pattition fales')
