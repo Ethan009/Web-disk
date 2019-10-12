@@ -171,17 +171,43 @@
            <input type="hidden" id="hidden" name="hidden" value=""
                     placeholder="文件系统类型" />
           <div class="btn-list">
-            <button type="submit" class="btn btn-primary" >确定</button>
-            <button type="button" class="btn btn-primary" id="test1">取消</button>
+            <button id="sumbit-table" type="submit" class="btn btn-primary" >确定</button>
+            <button type="button" class="btn btn-primary" id="test" >取消</button>
+            <button type="button" class="btn btn-primary" id="test11" >jubu</button>
+
           </div>
-         
         </form>
       </div>
       <div class="tab-pane fade" id="trafffic" role="tabpanel" aria-labelledby="trafffic-tab">
-        <div>{{Diskdata}}</div>
+        <!-- 第三個頁面 -->
+        <div>
+          <label for="send_content">向后台发送消息：</label>
+          <input id="send_content" type="text" name="send_content">
+          <input id="send" type="button" value="发送">
+        </div>
+        <div>
+            <label for="recv_content">从后台接收消息：</label>
+            <input id="recv_content" type="text" name="recv_content">
+        </div>
       </div>
       <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
-        <div>{{Diskdata_pv}}</div>
+        <div>
+          <button type="button" id="login">刷新</button>
+          <table class="table table-striped table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>编号</th>
+              <th>机具号</th>
+              <th>商户号</th>
+              <th>终端号</th>
+            </tr>
+          </thead>
+          <!-- 此处设置JS添加文本的id -->
+          <tbody id="tbody">
+          <!-- 一般这里都会放一个foreach循环遍历数组 -->
+          </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -190,25 +216,112 @@
   <script src={{url_for('static',filename="layer/layer.js")}}></script>
 </body>
 <!--url_for('static',filename="test/test1.html")-->
+
+<script type="text/javascript">
+$(function(){
+  $("#login").on('click',function (event) {
+    $.ajax({
+        url:'http://0.0.0.0:7777/test_post/nn',
+        type:'POST',
+        dataType:'JSON',
+        success:function(data){
+        $("#tbody").html("");
+            for(i in data){
+	            tr =
+            	'<td >'+data[i].id+'</td>'+
+            	'<td >'+data[i].name+'</td>'+
+            	'<td >'+data[i].price+'</td>'+
+            	'<td >'+'<button  class="btn" id = "ok" type="button">其他</button>'+'</td>'
+               	$("#tbody").append('<tr class="parent" id="row_01">'+tr+'</tr>')
+            }
+        }
+    });
+    })
+    })
+</script>
+
 <script>
-    $('#test1').on('click', function(){
+  $("#test").click(function(){
+  var pvcreate = $("#hidden").val()
+  $.ajax({
+    url:"http://127.0.0.1:5000/rev_partition",
+    type:"GET",
+    data:{
+        pvcreate:pvcreate
+    },
+    success:function (data) {
+        layer.open({
+        type: 2,
+        area: ['700px', '450px'],
+        fixed: false,
+        maxmin: true,
+        content: '{{url_for("layer_table")}}'
+      });
+    },
+    error:function () {
+        alert("接收失败")
+       }
+  })
+  })
+</script>
+
+<script type="text/javascript">
+    $("#test111").click(function () {
+        $.getJSON("http://127.0.0.1:5000/change_to_json",function (data) {
+            $("#recv_content").val(data.message) //将后端数据显示在前端
+            console.log("传到前端的数据的类型：" + typeof (data.message))
+            $("#send_content").val("")
+        })
+    })
+</script>
+
+
+<script>
+  $("#send").click(function () {
+     var message = $("#send_content").val()
+     $.ajax({
+         url:"http://127.0.0.1:5000/send_message",
+         type:"GET",
+         data:{
+             message:message
+         },
+         success:function (data) {
+             alert(data)
+         },
+         error:function () {
+             alert("接收失败")
+         }
+     })
+ })
+</script>
+
+<script type="text/javascript">
+    $("#send").click(function () {
+        $.getJSON("http://127.0.0.1:5000/change_to_json",function (data) {
+            $("#recv_content").val(data.message) //将后端数据显示在前端
+            console.log("传到前端的数据的类型：" + typeof (data.message))
+            $("#send_content").val("")
+        })
+    })
+</script>
+
+
+<script>
+    $('#test11').on('click', function(){
 	layer.open({
-	  type: 2,
-	  area: ['700px', '450px'],
-	  fixed: false,
-	  maxmin: true,
-	  content: '{{url_for("layer_table")}}'
-	});
+  type: 1,
+  skin: 'layui-layer-rim', //加上边框
+  area: ['420px', '240px'], //宽高
+  content: '<p>test2</p>,<p>test5</p>;
+  <p>test3</p>
+  '
+
+});
   });
 </script>
 
 <script>
   const data_show = {{Diskdata_pv|safe}}
- // [
-   // { disk: 'sda', options: ['sda1', 'sda2', 'sda3','sda4'] },
-    //{ disk: 'sdb', options: ['sdb1'] },
-    //{ disk: 'sdb', options: [] }
- // ]
 const radioWrap = $('#radioWrap')
 let roiadhtml = ''
 for(let i = 0; i < data_show.length; i++) {
@@ -247,12 +360,6 @@ radioWrap.append(roiadhtml)
 
 <script>
     const data = {{Diskdata|safe}}
-  //  [
-    //{ disk: 'sda', options: [{name: 'sda1', desc: '磁盘信息'}, {name: 'sda2', desc: '磁盘信息'}, {name: 'sda3', desc: '磁盘信息'}] },
-    //   { disk: 'sdb', options: [{name: 'sdbc', desc: '磁盘信息'}] },
-      // { disk: 'sdc', options: [] }
-    // ]
-    console.log(123);
     const accordionExample = $("#accordionExample")
     let html = ''
     let diskItemHtml = ''

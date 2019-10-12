@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,jsonify
 import difflib
 import re
 import os
@@ -118,26 +118,71 @@ def disk_pvcreate(str_disk):
 
 
 
-@app.route('/pvcreate-data',methods=['GET','POST'])
-def pvcreate_data():
-    if request.method == 'POST':
-        disk_data=data_to_json()[0]
-    return disk_data
+# @app.route('/pvcreate-data',methods=['GET','POST'])
+# def pvcreate_data():
+#     if request.method == 'POST':
+#         disk_data=data_to_json()[0]
+#     return disk_data
 
-@app.route('/layer_table',methods=['GET','POST'])
+
+
+
+@app.route('/rev_partition',methods=['GET'])
+def rev_partition():
+    global data_table
+    data_table=[]
+    rev_data = request.args['pvcreate']
+    rev_data=rev_data.split(',')
+    for data in rev_data:
+        if data:
+            data_table.append({'disk':data})
+    print("收到前端发过来的信息：%s" % rev_data)
+    print (data_table)
+    print("收到数据的类型为：" + str(type(rev_data)))
+    return '測試'
+
+
+@app.route('/layer_table')
 def layer_table():
-    Diskdata,Diskdata_pv=data_to_json()
-    return render_template('test1.html',Diskdata=Diskdata)
+    global data_table
+    return render_template('test1.html', Diskdata=data_table)
+
+
+@app.route('/send_message', methods=['GET'])
+def send_message():
+    global message_get
+    message_get = ""
+
+    message_get = request.args['message']
+    print("收到前端发过来的信息：%s" % message_get)
+    print("收到数据的类型为：" + str(type(message_get)))
+
+    return "收到消息"
+
+
+
+@app.route('/change_to_json', methods=['GET'])
+def change_to_json():
+
+    global message_get
+    message_get=''
+    message_json = {
+        "message": message_get
+    }
+
+    return jsonify(message_json)
+
+
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
     #Diskdata=disk_view()
     lis_disk=[]
     Diskdata,Diskdata_pv=data_to_json()
-    if request.method == 'POST':
-        disk_Partition=request.values.get('hidden')
-        #print ('122' , type(disk_Partition),disk_Partition)
-        disk_pvcreate(disk_Partition)
+    # if request.method == 'POST':
+    #     disk_Partition=request.values.get('hidden')
+    #     #print ('122' , type(disk_Partition),disk_Partition)
+    #     disk_pvcreate(disk_Partition)
 
     return render_template('index.html',Diskdata=Diskdata,Diskdata_pv=Diskdata_pv)
 

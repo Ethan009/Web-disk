@@ -27,9 +27,10 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% for data in Diskdata %}
 					<tr>
 						<td>
-							sda
+							{{data['disk']}}
 						</td>
 						<td>
 							1
@@ -38,39 +39,7 @@
 							2
 						</td>
 					</tr>
-					<tr class="success">
-						<td>
-							sdb
-						</td>
-						<td>
-							1
-						</td>
-						<td>
-							2
-						</td>
-					</tr>
-					<tr class="error">
-						<td>
-							sdc
-						</td>
-						<td>
-							1
-						</td>
-						<td>
-							2
-						</td>
-					</tr>
-					<tr class="warning">
-						<td>
-							sdd
-						</td>
-						<td>
-							1
-						</td>
-						<td>
-							2
-						</td>
-					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
