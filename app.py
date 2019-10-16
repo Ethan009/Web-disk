@@ -6,6 +6,7 @@ import re
 import os
 import sys
 import subprocess
+import pexpect
 
 # reload(sys)
 # sys.setdefaultencoding('utf-8')
@@ -108,14 +109,16 @@ def data_to_json():
 
 
 def disk_pvcreate(str_disk):
-    str_disk_name='/dev/'
-    str_disk_name_all=""
-    lis_disk=str_disk.split(',')
-    for disk in lis_disk:
-        if disk:
-            str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
-    subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
-
+    str_disk_name='/dev/%s' % str_disk
+    print ('str_disk_name',str_disk_name)
+    if str_disk_name:
+        child = pexpect.spawn(str("pvcreate" + " " + str_disk_name))
+        i = child.expect(['successfully created',pexpect.TIMEOUT,pexpect.EOF])
+        if i == 0 :
+            print ('%s successfully created' % str_disk_name)
+            return True
+        else:
+            return False
 
 
 # @app.route('/pvcreate-data',methods=['GET','POST'])
@@ -131,15 +134,17 @@ def disk_pvcreate(str_disk):
 def rev_partition():
     global data_table
     data_table=[]
-    rev_data = request.args['pvcreate']
+    rev_data = request.args['pvcreate'].strip()
     rev_data=rev_data.split(',')
     for data in rev_data:
         if data:
-            data_table.append({'disk':data})
-    print("收到前端发过来的信息：%s" % rev_data)
-    print (data_table)
-    print("收到数据的类型为：" + str(type(rev_data)))
-    return '測試'
+            if disk_pvcreate(data):
+                data_table.append({'disk':data ,'status': 'True'})
+            else:
+                data_table.append({'disk':data ,'status': 'fales'})
+    print ('rev_data:',rev_data)
+    print ('data_table:',data_table)
+    return 'test'
 
 
 @app.route('/layer_table')
@@ -152,14 +157,10 @@ def layer_table():
 def send_message():
     global message_get
     message_get = ""
-
     message_get = request.args['message']
     print("收到前端发过来的信息：%s" % message_get)
     print("收到数据的类型为：" + str(type(message_get)))
-
     return "收到消息"
-
-
 
 @app.route('/change_to_json', methods=['GET'])
 def change_to_json():
@@ -172,7 +173,10 @@ def change_to_json():
 
     return jsonify(message_json)
 
-
+@app.route('/diskdata',methods=['GET','POST'])
+def diskdata():
+    Diskdata, Diskdata_pv = data_to_json()
+    return Diskdata
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():

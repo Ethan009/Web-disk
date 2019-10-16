@@ -19,10 +19,7 @@
 							磁盘分区
 						</th>
 						<th>
-							成功
-						</th>
-						<th>
-							失败
+							結果
 						</th>
 					</tr>
 				</thead>
@@ -33,10 +30,7 @@
 							{{data['disk']}}
 						</td>
 						<td>
-							1
-						</td>
-						<td>
-							2
+							{{data['status']}}
 						</td>
 					</tr>
 					{% endfor %}

@@ -55,6 +55,8 @@
       margin-top: 20px;
     }
     #accordionExample {
+<!--      width: 800px;-->
+<!--      margin: 0 auto;-->
       margin-top: 20px;
     }
     .card-header {
@@ -62,7 +64,6 @@
       border-bottom: none;
     }
     .card {
-      border: none;
       border-bottom: 1px solid #ddd !important;
     }
     .card-body {
@@ -79,7 +80,7 @@
     }
     .disk-section {
       display: flex;
-      margin-left: 50px;
+      width: 200px;
     }
     .disk-desc-list .desc-item .title {
       width: 120px;
@@ -173,23 +174,12 @@
           <div class="btn-list">
             <button id="sumbit-table" type="submit" class="btn btn-primary" >确定</button>
             <button type="button" class="btn btn-primary" id="test" >取消</button>
-            <button type="button" class="btn btn-primary" id="test11" >jubu</button>
-
           </div>
         </form>
       </div>
       <div class="tab-pane fade" id="trafffic" role="tabpanel" aria-labelledby="trafffic-tab">
         <!-- 第三個頁面 -->
-        <div>
-          <label for="send_content">向后台发送消息：</label>
-          <input id="send_content" type="text" name="send_content">
-          <input id="send" type="button" value="发送">
-        </div>
-        <div>
-            <label for="recv_content">从后台接收消息：</label>
-            <input id="recv_content" type="text" name="recv_content">
-        </div>
-      </div>
+
       <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
         <div>
           <button type="button" id="login">刷新</button>
@@ -241,6 +231,7 @@ $(function(){
 </script>
 
 <script>
+
   $("#test").click(function(){
   var pvcreate = $("#hidden").val()
   $.ajax({
@@ -257,7 +248,32 @@ $(function(){
         maxmin: true,
         content: '{{url_for("layer_table")}}'
       });
-    },
+      const data_show = {{ Diskdata_pv|safe }}
+      const radioWrap = $('#radioWrap')
+      let roiadhtml = ''
+      for(let i = 0; i < data_show.length; i++) {
+        const disk = data_show[i].disk
+        let optionsHtml = ''
+        for (let j = 0; j < data_show[i].options.length; j++) {
+          optionsHtml += `
+            <div class="radio-item">
+              <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}"
+              ${j === 0 ? 'checked' : ''}>${data_show[i].options[j]}</label>
+
+            </div>
+          `
+        }
+        roiadhtml += `
+          <div class="section">
+            <div class="title">${disk}</div>
+            <div class="radio-list">
+              ${optionsHtml}
+            </div>
+          </div>
+        `
+      }
+      radioWrap.html(roiadhtml)
+          },
     error:function () {
         alert("接收失败")
        }
@@ -282,11 +298,11 @@ $(function(){
      $.ajax({
          url:"http://127.0.0.1:5000/send_message",
          type:"GET",
-         data:{
+         pvdata:{
              message:message
          },
-         success:function (data) {
-             alert(data)
+         success:function (pvdata) {
+             alert(pvdata)
          },
          error:function () {
              alert("接收失败")
@@ -321,7 +337,7 @@ $(function(){
 </script>
 
 <script>
-  const data_show = {{Diskdata_pv|safe}}
+const data_show = {{Diskdata_pv|safe}}
 const radioWrap = $('#radioWrap')
 let roiadhtml = ''
 for(let i = 0; i < data_show.length; i++) {
@@ -330,8 +346,7 @@ for(let i = 0; i < data_show.length; i++) {
   for (let j = 0; j < data_show[i].options.length; j++) {
     optionsHtml += `
       <div class="radio-item">
-        <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}"
-        ${j === 0 ? 'checked' : ''}>${data_show[i].options[j]}</label>
+        <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}">${data_show[i].options[j]}</label>
 
       </div>
     `
@@ -365,23 +380,35 @@ radioWrap.append(roiadhtml)
     let diskItemHtml = ''
     for (let i = 0; i < data.length; i++) {
       diskItemHtml = ''
+      diskItemHtml += `
+         <li class="desc-item">
+                      <div class="disk-section">
+                <div class="content">磁盘分区名称：</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">分区文件系统类型：</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">挂载点：</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">进度等级：</div>
+            </div>
+         </li>
+      `
       for (let j = 0; j < data[i].options.length; j++) {
         diskItemHtml += `
           <li class="desc-item">
             <div class="disk-section">
-                <div class="title">磁盘分区名称：</div>
                 <div class="content">${data[i].options[j].name}</div>
             </div>
             <div class="disk-section">
-                <div class="title">分区文件系统类型：</div>
                 <div class="content">${data[i].options[j].file_system}</div>
             </div>
             <div class="disk-section">
-                <div class="title">挂载点：</div>
                 <div class="content">${data[i].options[j].file_name}</div>
             </div>
             <div class="disk-section">
-                <div class="title">进度等级：</div>
                 <div class="content">${data[i].options[j].status}</div>
             </div>
           </li>
