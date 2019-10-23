@@ -17,6 +17,18 @@ def disk_view():
     diskmount = subprocess.getoutput("lsblk -lf ")
     return diskmount
 
+def datapvs():
+    data_pvs=subprocess.getoutput("pvs")
+    data_pvs=data_pvs.split('\n')
+    pvs_lis=[]
+    for line in data_pvs:
+        line_lis = line.split(' ')
+        for data in line_lis:
+            if data.find('/dev/sd') != -1:
+                pvs_lis.append(data)
+    return pvs_lis
+
+datapvs()
 
 def datapc():
 
