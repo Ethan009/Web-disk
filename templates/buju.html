@@ -1,38 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+<!--
+    作者：18883362590@163.com
+    时间：2017-08-17
+    描述：使用html+css+js技术编写一个完整的表格列表内容中 复选框的全选 反选效果
+
+    -->
 <head>
-    <meta charset="UTF-8">
-    <title>echarts.js案例一</title>
-    <script type="text/javascript" src='http://echarts.baidu.com/build/dist/echarts.js'></script>
+<meta charset="UTF-8">
+<title></title>
+      <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div id="chart" style="width:400px;height:400px;"></div>
-</body>
 <script type="text/javascript">
-    // 初始化图表标签
-    var myChart = echarts.init(document.getElementById('chart'));
-    var options={
-        //定义一个标题
-        title:{
-            text:'测试成绩'
-        },
-        legend:{
-            data:['销量']
-        },
-        //X轴设置
-        xAxis:{
-            data:['60分','70分','80分','90分','100分']
-        },
-        yAxis:{
-        },
-        //name=legend.data的时候才能显示图例
-        series:[{
-            name:'销量',
-            type:'bar',
-            data:['12','32','45','21','1']
-        }]
-
-    };
-    myChart.setOption(options);
+function selectall(){
+if($("input[name='selectall']").attr("checked")){
+$(':checkbox').each(
+function() {
+$(this).attr("checked", true);
+}
+);
+}else{
+$(':checkbox').each(
+function() {
+if($(this).attr("checked")){
+$(this).removeAttr("checked");
+}
+}
+);
+}
+}
 </script>
+<body>
+<div>
+<table bordercolor="#CCCCCC" border="1">
+<tr bgcolor="#CCCCCC">
+<td><input type="checkbox" name="selectall" onclick="selectall()"/></td>
+</tr>
+<tr>
+<td><input type="checkbox"/></td>
+</tr>
+<tr>
+<td><input type="checkbox"/></td>
+</tr>
+<tr>
+<td><input type="checkbox"/></td>
+</tr>
+<tr>
+<td><input type="checkbox"/></td>
+</tr>
+<tr>
+<td><input type="checkbox"/></td>
+</tr>
+<tr>
+<td><input type="checkbox"/></td>
+</tr>
+</table>
+</div>
+</body>
 </html>
+
+

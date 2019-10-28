@@ -8,16 +8,35 @@ import sys
 import subprocess
 import pexpect
 
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+
 
 app = Flask(__name__)
 
-def disk_view():
-    diskmount = subprocess.getoutput("lsblk -lf ")
-    return diskmount
+def shell_pvcreate(str_disk):
+    str_disk_name='/dev/%s' % str_disk
+    if str_disk_name:
+        child = pexpect.spawn(str("pvcreate" + " " + str_disk_name))
+        i = child.expect(['successfully created',pexpect.TIMEOUT,pexpect.EOF])
+        if i == 0 :
+            print ('%s successfully created' % str_disk_name)
+            return True
+        else:
+            print ('%s fail created' % str_disk_name)
+            return False
 
-def datapvs():
+def shell_pvremove(str_disk):
+    str_disk_name='/dev/%s' % str_disk
+    if str_disk_name:
+        child = pexpect.spawn(str("pvremove" + " " + str_disk_name))
+        i = child.expect(['successfully wiped',pexpect.TIMEOUT,pexpect.EOF])
+        if i == 0 :
+            print ('%s successfully wiped' % str_disk_name)
+            return True
+        else:
+            return False
+
+
+def shell_pvs():
     data_pvs=subprocess.getoutput("pvs")
     data_pvs=data_pvs.split('\n')
     pvs_lis=[]
@@ -28,7 +47,19 @@ def datapvs():
                 pvs_lis.append(data)
     return pvs_lis
 
-datapvs()
+
+def shell_pvscan():
+    data_pvscan=subprocess.getoutput("pvscan")
+    data_pvscan=data_pvscan.split('\n')
+    pvscan_lis=[]
+    for line in data_pvscan:
+        line_lis = line.split(' ')
+        for data in line_lis:
+            if data.find('/dev/sd') != -1:
+                pvscan_lis.append(data)
+    print ('pvscan_lis:', pvscan_lis)
+    return pvscan_lis
+
 
 def datapc():
 
@@ -80,16 +111,8 @@ def datapc():
                 if lstDisk:
                     dicDI[lstDisk[-1]].append(list(lstPartion))
                 continue
-    # print(lstDisk)
-    # pprint.pprint(dicDI)
-    #print (dicDI)
     return dicDI
-# keys: <class 'dict_keys'> dict_keys(['sda', 'sdb', 'sdc', 'sdd', 'sde'])
-# values: <class 'dict_values'> dict_values([[['sda1', '', '', '2']], 
-#     [['sdb1', '', '', '2'], ['sdb2', '', '', '2'], ['sdb3', '', '', '2'], ['sdb4', '', '', '2']],
-#      [['sdc1', '', '', '2'], ['sdc2', '', '', '2'], ['sdc3', '', '', '2'], ['sdc4', '', '', '2']],
-#      [['sdd1', '', '', '2']], 
-#      []])
+
 
 def data_to_json():
     lis_data=[]
@@ -118,28 +141,19 @@ def data_to_json():
     #print (lis_data)
     return lis_data,lis_data_pv
 
-
-
-def disk_pvcreate(str_disk):
-    str_disk_name='/dev/%s' % str_disk
-    print ('str_disk_name',str_disk_name)
-    if str_disk_name:
-        child = pexpect.spawn(str("pvcreate" + " " + str_disk_name))
-        i = child.expect(['successfully created',pexpect.TIMEOUT,pexpect.EOF])
-        if i == 0 :
-            print ('%s successfully created' % str_disk_name)
-            return True
-        else:
-            return False
-
-
-# @app.route('/pvcreate-data',methods=['GET','POST'])
-# def pvcreate_data():
-#     if request.method == 'POST':
-#         disk_data=data_to_json()[0]
-#     return disk_data
-
-
+@app.route('/receive_pvremove')
+def receive_pvremove(disk):
+    global pvremove_data
+    pvremove_data = []
+    pvremove_str = request.args['pvremove'].strip()
+    pvremove_lis = pvremove_str.split(',')
+    for pvremove_disk in pvremove_lis:
+        if pvremove_disk:
+            if shell_pvremove(data):
+                pvremove_data.append({'disk': data, 'status': 'True'})
+            else:
+                pvremove_data.append({'disk': data, 'status': 'fales'})
+    return 'test'
 
 
 @app.route('/rev_partition',methods=['GET'])
@@ -150,14 +164,30 @@ def rev_partition():
     rev_data=rev_data.split(',')
     for data in rev_data:
         if data:
-            if disk_pvcreate(data):
+            if shell_pvcreate(data):
                 data_table.append({'disk':data ,'status': 'True'})
             else:
                 data_table.append({'disk':data ,'status': 'fales'})
-    print ('rev_data:',rev_data)
-    print ('data_table:',data_table)
     return 'test'
 
+@app.route('/pvremove')
+def web_pvremove():
+    pvs_data=shell_pvs()
+    return render_template('pv/deletepv.html',pvs_data=pvs_data)
+
+@app.route('/pvcreate')
+def web_pvcreate():
+    Diskdata, Diskdata_pv = data_to_json()
+    return render_template('pv/pvcreate.html',Diskdata_pv=Diskdata_pv)
+
+@app.route('/scanpv')
+def web_scanpv():
+    return render_template('pv/scanpv.html')
+
+@app.route('/pvs')
+def web_pvs():
+    pvs_data=shell_pvs()
+    return render_template('pv/pvs.html',pvs_data=pvs_data)
 
 @app.route('/layer_table')
 def layer_table():
@@ -165,25 +195,34 @@ def layer_table():
     return render_template('test1.html', Diskdata=data_table)
 
 
-@app.route('/send_message', methods=['GET'])
-def send_message():
-    global message_get
-    message_get = ""
-    message_get = request.args['message']
-    print("收到前端发过来的信息：%s" % message_get)
-    print("收到数据的类型为：" + str(type(message_get)))
-    return "收到消息"
+# @app.route('/send_message', methods=['GET'])
+# def send_message():
+#     global message_get
+#     message_get = ""
+#     message_get = request.args['message']
+#     print("收到前端发过来的信息：%s" % message_get)
+#     print("收到数据的类型为：" + str(type(message_get)))
+#     return "收到消息"
+#
+# @app.route('/change_to_json', methods=['GET'])
+# def change_to_json():
+#
+#     global message_get
+#     message_get=''
+#     message_json = {
+#         "message": message_get
+#     }
+#
+#     return jsonify(message_json)
 
-@app.route('/change_to_json', methods=['GET'])
-def change_to_json():
-
-    global message_get
-    message_get=''
-    message_json = {
-        "message": message_get
+@app.route('/return_data',methods=['GET'])
+def return_data():
+    Diskdata, Diskdata_pv = data_to_json()
+    message_json={
+        "diskdata":Diskdata_pv
     }
-
     return jsonify(message_json)
+
 
 @app.route('/diskdata',methods=['GET','POST'])
 def diskdata():
@@ -192,7 +231,6 @@ def diskdata():
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
-    #Diskdata=disk_view()
     lis_disk=[]
     Diskdata,Diskdata_pv=data_to_json()
     # if request.method == 'POST':

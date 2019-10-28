@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        .deletepv{
+            width:70px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <table class="table">
+          <thead class="thead">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">OS</th>
+              <th scope="col">Size</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for data in pvs_data %}
+            <tr>
+                <td>
+                    {{data}}
+                </td>
+                <td>
+                    暫未開放
+                </td>
+                <td>
+                    暫未開放
+                </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
