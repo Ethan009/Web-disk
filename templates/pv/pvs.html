@@ -12,6 +12,7 @@
 </head>
 <body>
     <div>
+        {%if pvs_data %}
         <table class="table">
           <thead class="thead">
             <tr>
@@ -36,6 +37,10 @@
           {% endfor %}
           </tbody>
         </table>
+        {% else %}
+        <h2>小主人，你還沒有任何PV</h2>
+        <h3><a href="{{url_for('web_pvcreate')}}">創建PV</a></h3>
+        {% endif %}
     </div>
   <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

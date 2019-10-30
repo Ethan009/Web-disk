@@ -12,7 +12,8 @@
 </head>
 <body>
     <div>
-        <table class="table" id="mytable">
+        {% if pvs_data %}
+        <table class="table" id="myTable">
           <thead class="thead">
             <tr>
               <th scope="col">Name</th>
@@ -30,20 +31,58 @@
                     暫未開放
                 </td>
                 <td>
-                    <label><input type="button" value="刪除PV" class="deletepv" id="deletepv" onclick="pvremove()"></label>
+                    <label><input type="button" value="刪除PV" class="deletepv" data-index="{{data|safe}}"></label>
                 </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        {% else %}
+        <h2>小主人，你還沒有任何PV</h2>
+        <h3><a href="{{url_for('web_pvcreate')}}">創建PV</a></h3>
+        {% endif %}
     </div>
   <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src={{url_for('static',filename="layer/layer.js")}}></script>
 </body>
 <script>
-    $("#deletepv").click(function(){
-      var diskname=document.getElementById("mytable").rows[0].cells;
-      alert(diskname[0].innerHTML);
+function myrefresh()
+{
+   window.location.reload();
+}
+
+function pvremove(index){
+    $.ajax({
+          url:"http://127.0.0.1:5000/receive_pvremove",
+          type:"GET",
+          data:{
+            pvremove:index
+          },
+          success:function (data){
+
+          },
+          error:function(){
+            alert("刪除失敗")
+          }
+
+          })
+}
+    $(".deletepv").click(function (event) {
+        const index = event.target.dataset.index
+        layer.confirm('確認刪除'+ index + '？', {
+          btn: ['Yes','No'] //按钮
+        }, function(){
+          pvremove(index)
+          layer.msg('成功刪除', {icon: 1});
+          myrefresh()
+        }, function(){
+          layer.msg('取消刪除', {
+            time: 20000, //20s后自动关闭
+            btn: ['繼續刪除']
+          });
+        });
+
     })
 
 </script>

@@ -25,14 +25,14 @@ def shell_pvcreate(str_disk):
             return False
 
 def shell_pvremove(str_disk):
-    str_disk_name='/dev/%s' % str_disk
-    if str_disk_name:
-        child = pexpect.spawn(str("pvremove" + " " + str_disk_name))
+    if str_disk:
+        child = pexpect.spawn(str("pvremove" + " " + str_disk))
         i = child.expect(['successfully wiped',pexpect.TIMEOUT,pexpect.EOF])
         if i == 0 :
-            print ('%s successfully wiped' % str_disk_name)
+            print ('%s successfully wiped' % str_disk)
             return True
         else:
+            print ('%s fail wiped' % str_disk)
             return False
 
 
@@ -59,6 +59,12 @@ def shell_pvscan():
                 pvscan_lis.append(data)
     print ('pvscan_lis:', pvscan_lis)
     return pvscan_lis
+
+def shell_vgs():
+    pass
+
+def shell_vgcreate():
+    pass
 
 
 def datapc():
@@ -142,17 +148,15 @@ def data_to_json():
     return lis_data,lis_data_pv
 
 @app.route('/receive_pvremove')
-def receive_pvremove(disk):
+def receive_pvremove():
     global pvremove_data
     pvremove_data = []
-    pvremove_str = request.args['pvremove'].strip()
-    pvremove_lis = pvremove_str.split(',')
-    for pvremove_disk in pvremove_lis:
-        if pvremove_disk:
-            if shell_pvremove(data):
-                pvremove_data.append({'disk': data, 'status': 'True'})
-            else:
-                pvremove_data.append({'disk': data, 'status': 'fales'})
+    pvremove_disk = request.args['pvremove']
+    if pvremove_disk:
+        if shell_pvremove(pvremove_disk):
+            pvremove_data.append({'disk': pvremove_disk, 'status': 'True'})
+        else:
+            pvremove_data.append({'disk': pvremove_disk, 'status': 'fales'})
     return 'test'
 
 
@@ -175,6 +179,18 @@ def web_pvremove():
     pvs_data=shell_pvs()
     return render_template('pv/deletepv.html',pvs_data=pvs_data)
 
+@app.route('/vgs')
+def web_vgs():
+    return render_template('vg/vgs.html')
+
+@app.route('/vgcreate')
+def web_vgcreate():
+    return render_template('vg/vgcreate.html')
+
+@app.route('/vgremove')
+def web_vgremove():
+    return render_template('vg/vgremove.html')
+
 @app.route('/pvcreate')
 def web_pvcreate():
     Diskdata, Diskdata_pv = data_to_json()
@@ -183,6 +199,10 @@ def web_pvcreate():
 @app.route('/scanpv')
 def web_scanpv():
     return render_template('pv/scanpv.html')
+
+@app.route('/pvremove_feeback')
+def pvremove_feedback():
+    return render_template('pv/pvremove_feedback.html')
 
 @app.route('/pvs')
 def web_pvs():
