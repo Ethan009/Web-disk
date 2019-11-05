@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
     .radio-wrap {
       width: 500px;
       margin: 100px auto 20px;
       border: 1px solid #ddd;
     }
+
     .section {
       display: flex;
       min-height: 50px;
       border-bottom: 1px solid #ddd;
     }
+
     .section:last-child {
       border-bottom: none;
     }
+
     .section .title {
       display: flex;
       flex: 0 0 80px;
@@ -26,6 +30,7 @@
       border-right: 1px solid #ddd;
       color: #aaa;
     }
+
     .section .radio-list {
       display: flex;
       margin: 0;
@@ -34,91 +39,104 @@
       flex-wrap: wrap;
       padding-bottom: 10px;
     }
+
     .radio-list .radio-item {
       list-style: none;
       margin-left: 12px;
       margin-top: 10px;
     }
+
     .btn-list {
-       display: flex;
-        justify-content: center;
+      display: flex;
+      justify-content: center;
     }
+
     .btn-list .btn {
-        margin-left: 10px;
+      margin-left: 10px;
     }
+
     .btn-.ist .btn:first-of-type {
       margin-left: 0;
     }
-        #myTab {
+
+    #myTab {
       margin-top: 20px;
     }
+
     #accordionExample {
-<!--      width: 800px;-->
-<!--      margin: 0 auto;-->
       margin-top: 20px;
     }
+
     .card-header {
       background-color: #fff;
       border-bottom: none;
     }
+
     .card {
       border-bottom: 1px solid #ddd !important;
     }
+
     .card-body {
       padding: 0;
     }
+
     .disk-desc-list {
       margin: 0 0 0 80px;
       padding: 0;
     }
+
     .disk-desc-list .desc-item {
       list-style: none;
       display: flex;
       margin-bottom: 10px;
     }
+
     .disk-section {
       display: flex;
       width: 200px;
     }
+
     .disk-desc-list .desc-item .title {
       width: 120px;
       color: #999;
     }
+
     .disk-desc-list .desc-item .content {
       flex: 1;
     }
-    </style>
+  </style>
 </head>
+
 <body>
-<form action="/" method="POST">
+  <form action="/" method="POST">
     <div class="radio-wrap" id="radioWrap"></div>
-    <input type="hidden" id="hidden" name="hidden" value=""
-                placeholder="文件系统类型" />
-  <div class="btn-list">
-    <button type="button" class="btn btn-primary" id="test">确定</button>
-    <button type="button" class="btn btn-primary" name="selectall" onclick="selectall()">取消</button>
-  </div>
-</form>
+    <input type="hidden" id="hidden" name="hidden" value="" placeholder="文件系统类型" />
+    <div class="btn-list">
+      <button type="button" class="btn btn-primary" id="test">确定</button>
+      <button type="button" class="btn btn-primary" name="selectall" onclick="selectall()">取消</button>
+      <button type="button" class="btn btn-primary" id="allSelectedBtn">全选</button>
+      <button type="button" class="btn btn-primary" id="cancelSelectedBtn">取消全选</button>
+    </div>
+  </form>
   <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src={{url_for('static',filename="layer/layer.js")}}></script>
 </body>
 <script>
-
-const data_show = {{Diskdata_pv|safe}}
-const radioWrap = $('#radioWrap')
-let roiadhtml = ''
-for(let i = 0; i < data_show.length; i++) {
-  const disk = data_show[i].disk
-  let optionsHtml = ''
-  for (let j = 0; j < data_show[i].options.length; j++) {
-    optionsHtml += `
+  const data_show = {{Diskdata_pv|safe}}
+  const radioWrap = $('#radioWrap')
+  let roiadhtml = ''
+  for (let i = 0; i < data_show.length; i++) {
+    const disk = data_show[i].disk
+    let optionsHtml = ''
+    for (let j = 0; j < data_show[i].options.length; j++) {
+      optionsHtml += `
       <div class="radio-item">
-        <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}">${data_show[i].options[j]}</label>
+        <label><input type="checkbox" id="disk-name" class="checkbox-item" name="disk-name" value="${data_show[i].options[j]}">${data_show[i].options[j]}</label>
       </div>
     `
-  }
-  roiadhtml += `
+    }
+    roiadhtml += `
     <div class="section">
       <div class="title">${disk}</div>
       <div class="radio-list">
@@ -126,42 +144,41 @@ for(let i = 0; i < data_show.length; i++) {
       </div>
     </div>
   `
-}
-radioWrap.append(roiadhtml)
+  }
+  radioWrap.append(roiadhtml)
 </script>
 
 <script>
-    $("input[name='disk-name']").change(function(){
-      var result = ' ';
-      $("input[name='disk-name']:checked").each(function(){
-          result+=$(this).val()+',';
-      })
-      $('#hidden').val(result);
-    });
+  $("input[name='disk-name']").change(function () {
+    var result = ' ';
+    $("input[name='disk-name']:checked").each(function () {
+      result += $(this).val() + ',';
+    })
+    $('#hidden').val(result);
+  });
 </script>
 
 <script>
-
-  $("#test").click(function(){
-  var pvcreate = $("#hidden").val()
-  $.ajax({
-    url:"http://127.0.0.1:5000/rev_partition",
-    type:"GET",
-    data:{
-        pvcreate:pvcreate
-    },
-    success:function (data) {
+  $("#test").click(function () {
+    var pvcreate = $("#hidden").val()
+    $.ajax({
+      url: "http://127.0.0.1:5000/rev_partition",
+      type: "GET",
+      data: {
+        pvcreate: pvcreate
+      },
+      success: function (data) {
         layer.open({
-        type: 2,
-        area: ['700px', '450px'],
-        fixed: false,
-        maxmin: true,
-        content: '{{url_for("layer_table")}}'
-      });
+          type: 2,
+          area: ['700px', '450px'],
+          fixed: false,
+          maxmin: true,
+          content: '{{url_for("layer_table")}}'
+        });
         const data_show = {{Diskdata_pv|safe}}
         const radioWrap = $('#radioWrap')
         let roiadhtml = ''
-        for(let i = 0; i < data_show.length; i++) {
+        for (let i = 0; i < data_show.length; i++) {
           const disk = data_show[i].disk
           let optionsHtml = ''
           for (let j = 0; j < data_show[i].options.length; j++) {
@@ -170,8 +187,8 @@ radioWrap.append(roiadhtml)
             <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}">${data_show[i].options[j]}</label>
             </div>
         `
-        }
-        roiadhtml += `
+          }
+          roiadhtml += `
         <div class="section">
         <div class="title">${disk}</div>
         <div class="radio-list">
@@ -180,32 +197,56 @@ radioWrap.append(roiadhtml)
         </div>
         `
         }
-      radioWrap.html(roiadhtml)
-          },
-    error:function () {
+        radioWrap.html(roiadhtml)
+      },
+      error: function () {
         alert("接收失败")
-       }
-  })
+      }
+    })
   })
 </script>
 
 <script>
-    function selectall(){
-      if($("input[name='selectall']").attr("checked")){
-        $(':checkbox').each(
-        function() {
+  function selectall() {
+    if ($("input[name='selectall']").attr("checked")) {
+      $(':checkbox').each(
+        function () {
           $(this).attr("checked", true);
         }
       );
-      }else{
-        $(':checkbox').each(
-          function() {
-            if($(this).attr("checked")){
-              $(this).removeAttr("checked");
-            }
+    } else {
+      $(':checkbox').each(
+        function () {
+          if ($(this).attr("checked")) {
+            $(this).removeAttr("checked");
           }
-          );
+        }
+      );
+    }
+  }
+</script>
+
+<!-- 全选、取消全选功能 开始 -->
+<script>
+  const allSelectedBtn = $('#allSelectedBtn')
+  const cancelSelectedBtn = $('#cancelSelectedBtn')
+  const checkboxItems = $('.checkbox-item')
+
+  allSelectedBtn.click(() => selectedItem('all'))
+  cancelSelectedBtn.click(() => selectedItem('cancel'))
+
+  function selectedItem(type) {
+    if (type === 'all') {
+      for (let i = 0; i < checkboxItems.length; i++) {
+        checkboxItems[i].checked = true
+      }
+    } else if (type === 'cancel') {
+      for (let i = 0; i < checkboxItems.length; i++) {
+        checkboxItems[i].checked = false
       }
     }
+  }
 </script>
+<!-- 全选、取消全选功能 结束 -->
+
 </html>
