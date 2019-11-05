@@ -19,58 +19,21 @@
 							磁盘分区
 						</th>
 						<th>
-							成功
-						</th>
-						<th>
-							失败
+							結果
 						</th>
 					</tr>
 				</thead>
 				<tbody>
+					{% for data in Diskdata %}
 					<tr>
 						<td>
-							sda
+							{{data['disk']}}
 						</td>
 						<td>
-							1
-						</td>
-						<td>
-							2
+							{{data['status']}}
 						</td>
 					</tr>
-					<tr class="success">
-						<td>
-							sdb
-						</td>
-						<td>
-							1
-						</td>
-						<td>
-							2
-						</td>
-					</tr>
-					<tr class="error">
-						<td>
-							sdc
-						</td>
-						<td>
-							1
-						</td>
-						<td>
-							2
-						</td>
-					</tr>
-					<tr class="warning">
-						<td>
-							sdd
-						</td>
-						<td>
-							1
-						</td>
-						<td>
-							2
-						</td>
-					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>

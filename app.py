@@ -1,21 +1,144 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,jsonify
 import difflib
 import re
 import os
 import sys
 import subprocess
+import pexpect
 
-# reload(sys)
-# sys.setdefaultencoding('utf-8')
+
 
 app = Flask(__name__)
 
-def disk_view():
-    diskmount = subprocess.getoutput("lsblk -lf ")
-    return diskmount
+def shell_pvcreate(str_disk):
+    str_disk_name='/dev/%s' % str_disk
+    if str_disk_name:
+        child = pexpect.spawn(str("pvcreate" + " " + str_disk_name))
+        i = child.expect(['successfully created',pexpect.TIMEOUT,pexpect.EOF])
+        if i == 0 :
+            print ('%s successfully created' % str_disk_name)
+            return True
+        else:
+            print ('%s fail created' % str_disk_name)
+            return False
 
+def shell_pvremove(str_disk):
+    if str_disk:
+        child = pexpect.spawn(str("pvremove" + " " + str_disk))
+        i = child.expect(['successfully wiped',pexpect.TIMEOUT,pexpect.EOF])
+        if i == 0 :
+            print ('%s successfully wiped' % str_disk)
+            return True
+        else:
+            print ('%s fail wiped' % str_disk)
+            return False
+
+
+def shell_pvs():
+    data_pvs=subprocess.getoutput("pvs")
+    data_pvs=data_pvs.split('\n')
+    pvs_lis=[]
+    for line in data_pvs:
+        line_lis = line.split(' ')
+        for data in line_lis:
+            if data.find('/dev/sd') != -1:
+                pvs_lis.append(data)
+    return pvs_lis
+
+
+def shell_pvscan():
+    data_pvscan=subprocess.getoutput("pvscan")
+    data_pvscan=data_pvscan.split('\n')
+    pvscan_lis=[]
+    for line in data_pvscan:
+        line_lis = line.split(' ')
+        for data in line_lis:
+            if data.find('/dev/sd') != -1:
+                pvscan_lis.append(data)
+    print ('pvscan_lis:', pvscan_lis)
+    return pvscan_lis
+
+
+def shell_vgdisplay_vgname():
+    data_vgdisplay=subprocess.getoutput("vgdisplay")
+    data_vgdisplay=data_vgdisplay.split('\n')
+    vg_name_lis=[]
+    for line in data_vgdisplay:
+        if line.find('VG Name') != -1:
+            reVGName = re.compile('(?<=VG Name).*')
+            if reVGName.search(line):
+                a = reVGName.search(line).group().strip()
+                vg_name_lis.append(a)
+    return vg_name_lis
+
+def shell_vgdisplay_pv(vgname):
+    shell="vgdisplay -v " + str(vgname)
+    data_vgdisplay_pv=subprocess.getoutput(str(shell))
+    data_vgdisplay_pv=data_vgdisplay_pv.split('\n')
+    vg_pv_name_lis=[]
+    for line in data_vgdisplay_pv:
+        if line.find('PV Name') != -1:
+            rePVName = re.compile('(?<=PV Name).*')
+            if rePVName.search(line):
+                a = rePVName.search(line).group().strip()
+                vg_pv_name_lis.append(a)
+    return vg_pv_name_lis
+
+def shell_vgcreate(vg_name,pv_to_vg_lis):
+    pv_str=''
+    for pv_name in pv_to_vg_lis:
+        pv_str=pv_str + ' ' + pv_name
+    if pv_to_vg_lis:
+        shell="vgcreate" + " " + vg_name + pv_str
+        child = pexpect.spawn(str(shell))
+        i = child.expect(['successfully created', pexpect.TIMEOUT, pexpect.EOF])
+        if i == 0:
+            print('%s successfully created' % vg_name)
+            return True
+        else:
+            print('%s fail created' % vg_name)
+            return False
+
+def shell_vgremove(vg_name):
+    if vg_name:
+        child = pexpect.spawn(str("vgremove" + " " + vg_name))
+        i = child.expect(['successfully removed',pexpect.TIMEOUT,pexpect.EOF])
+        if i == 0 :
+            print ('%s successfully removed' % vg_name)
+            return True
+        else:
+            print ('%s fail removed' % vg_name)
+            return False
+
+def shell_vgextend(vg_name,extend_pv_lis):
+    pv_str = ''
+    for pv_name in extend_pv_lis:
+        pv_str = pv_str + ' ' + pv_name
+    if extend_pv_lis:
+        shell = "vgextend" + " " + vg_name + pv_str
+        child = pexpect.spawn(str(shell))
+        i = child.expect(['successfully extended', pexpect.TIMEOUT, pexpect.EOF])
+        if i == 0:
+            print('%s successfully extended' % vg_name)
+            return True
+        else:
+            print('%s fail extended' % vg_name)
+            return False
+
+def shell_vgreduce(vg_name,reduce_pv):
+    if reduce_pv:
+        shell = "vgreduce" + " " + vg_name + " " + reduce_pv
+        print ('shell',shell)
+        child = pexpect.spawn(str(shell))
+        i = child.expect(['Removed', pexpect.TIMEOUT, pexpect.EOF])
+        if i == 0:
+            print('%s successfully reduceed' % vg_name)
+            return True
+        else:
+            print('%s fail reduceed' % vg_name)
+            return False
 
 def datapc():
 
@@ -67,16 +190,8 @@ def datapc():
                 if lstDisk:
                     dicDI[lstDisk[-1]].append(list(lstPartion))
                 continue
-    # print(lstDisk)
-    # pprint.pprint(dicDI)
-    #print (dicDI)
     return dicDI
-# keys: <class 'dict_keys'> dict_keys(['sda', 'sdb', 'sdc', 'sdd', 'sde'])
-# values: <class 'dict_values'> dict_values([[['sda1', '', '', '2']], 
-#     [['sdb1', '', '', '2'], ['sdb2', '', '', '2'], ['sdb3', '', '', '2'], ['sdb4', '', '', '2']],
-#      [['sdc1', '', '', '2'], ['sdc2', '', '', '2'], ['sdc3', '', '', '2'], ['sdc4', '', '', '2']],
-#      [['sdd1', '', '', '2']], 
-#      []])
+
 
 def data_to_json():
     lis_data=[]
@@ -105,40 +220,219 @@ def data_to_json():
     #print (lis_data)
     return lis_data,lis_data_pv
 
+#[{vgname:vgname,pvname:['/dev/sd1','/dev/sda2']},{},{}]
+#[{vgname:vgname , options : [{pvname:pvname,size:size}]}]
+def all_vg_pv():
+    vg_name_lis=shell_vgdisplay_vgname()
+    all_vg_pv=[]
+    for vg_name in vg_name_lis:
+        pv_name=shell_vgdisplay_pv(vg_name)
+        for i in range(len(pv_name)):
+            pv_name[i]={'pvname':pv_name[i],'Size':'暫未開放'}
+        dic_vg_pv = {'vgname': vg_name}
+        dic_vg_pv['options'] = pv_name
+        all_vg_pv.append(dic_vg_pv)
+    return all_vg_pv
 
 
-def disk_pvcreate(str_disk):
-    str_disk_name='/dev/'
-    str_disk_name_all=""
-    lis_disk=str_disk.split(',')
-    for disk in lis_disk:
-        if disk:
-            str_disk_name_all=str_disk_name_all+" "+(str_disk_name+disk.strip())
-    subprocess.getoutput(str("pvcreate" + " " + str_disk_name_all))
 
 
 
-@app.route('/pvcreate-data',methods=['GET','POST'])
-def pvcreate_data():
-    if request.method == 'POST':
-        disk_data=data_to_json()[0]
-    return disk_data
 
-@app.route('/layer_table',methods=['GET','POST'])
+
+
+
+@app.route('/receive_pvremove')
+def receive_pvremove():
+    global pvremove_data
+    pvremove_data = []
+    pvremove_disk = request.args['pvremove']
+    if pvremove_disk:
+        if shell_pvremove(pvremove_disk):
+            pvremove_data.append({'disk': pvremove_disk, 'status': 'True'})
+        else:
+            pvremove_data.append({'disk': pvremove_disk, 'status': 'fales'})
+    return 'test'
+
+
+@app.route('/rev_partition',methods=['GET'])
+def rev_partition():
+    global data_table
+    data_table=[]
+    rev_data = request.args['pvcreate'].strip()
+    rev_data=rev_data.split(',')
+    for data in rev_data:
+        if data:
+            if shell_pvcreate(data):
+                data_table.append({'disk':data ,'status': 'True'})
+            else:
+                data_table.append({'disk':data ,'status': 'fales'})
+    return 'test'
+
+@app.route('/pvremove')
+def web_pvremove():
+    pvs_data=shell_pvs()
+    return render_template('pv/deletepv.html',pvs_data=pvs_data)
+
+@app.route('/vgs')
+def web_vgs():
+    return render_template('vg/vgs.html')
+
+@app.route('/vgcreate')
+def web_vgcreate():
+    return render_template('vg/vgcreate.html')
+
+
+
+@app.route('/vgremove',methods=['GET','POST'])
+def web_vgremove():
+    global vg_name
+    if request.method == 'GET':
+        vg_name = request.args['vgname_web']
+    return render_template('vg/vgremove.html')
+
+
+@app.route('/pvcreate')
+def web_pvcreate():
+    Diskdata, Diskdata_pv = data_to_json()
+    return render_template('pv/pvcreate.html',Diskdata_pv=Diskdata_pv)
+
+@app.route('/scanpv')
+def web_scanpv():
+    return render_template('pv/scanpv.html')
+
+@app.route('/vg',methods=['GET','POST'])
+def web_vg():
+    vg_data=all_vg_pv()
+    vg_name=shell_vgdisplay_vgname()
+    if request.method=='GET':
+        data=request.values.get('selectfunct')
+        print ('data',data)
+    return render_template('vg/vg.html',VGdata=vg_data,VGname=vg_name)
+
+@app.route('/pvremove_feeback')
+def pvremove_feedback():
+    return render_template('pv/pvremove_feedback.html')
+
+@app.route('/pvs')
+def web_pvs():
+    pvs_data=shell_pvs()
+    return render_template('pv/pvs.html',pvs_data=pvs_data)
+
+@app.route('/layer_table')
 def layer_table():
-    Diskdata,Diskdata_pv=data_to_json()
-    return render_template('test1.html',Diskdata=Diskdata)
+    global data_table
+    return render_template('test1.html', Diskdata=data_table)
+
+
+# @app.route('/send_message', methods=['GET'])
+# def send_message():
+#     global message_get
+#     message_get = ""
+#     message_get = request.args['message']
+#     print("收到前端发过来的信息：%s" % message_get)
+#     print("收到数据的类型为：" + str(type(message_get)))
+#     return "收到消息"
+#
+# @app.route('/change_to_json', methods=['GET'])
+# def change_to_json():
+#
+#     global message_get
+#     message_get=''
+#     message_json = {
+#         "message": message_get
+#     }
+#
+#     return jsonify(message_json)
+
+@app.route('/return_data',methods=['GET'])
+def return_data():
+    Diskdata, Diskdata_pv = data_to_json()
+    message_json={
+        "diskdata":Diskdata_pv
+    }
+    return jsonify(message_json)
+
+
+@app.route('/diskdata',methods=['GET','POST'])
+def diskdata():
+    Diskdata, Diskdata_pv = data_to_json()
+    return Diskdata
+
+
+@app.route("/San2", methods=['POST', 'GET'])
+def hello():
+    if request.method == "POST":
+        yjfq = request.values.get('yjfq')  # 一键分区
+        yufenqu = request.values.get('yufenqu')  # 预分区磁盘
+        fengquhao = request.values.get('fengquhao')  # 分区号
+        start = request.values.get('start')  # 开始
+        end = request.values.get('end')  # 结束
+        ygzcpm = request.values.get('ygzcpm')  # 预挂载磁盘
+        wjjlj = request.values.get('wjjlj')  # 文件夹路径输入
+        hidden = request.values.get('hidden')  # 文件类型选择
+        xxx = request.values.get('xxx')  # 当前磁盘分区
+
+        # 格式化文件类型
+        if hidden and xxx:
+            os.popen("mkfs.%s /dev/%s " % (hidden, xxx))
+            print("格式化成功")
+        else:
+            # print("格式化失败")
+            pass
+
+        # 一键分区
+        # print(yjfq)
+        if yjfq:
+            child = pexpect.spawn("sudo fdisk /dev/%s" % (yjfq), timeout=3)
+            child.sendline('n')
+            child.sendline('\n')
+            child.sendline('\n')
+            child.sendline('\n')
+            child.sendline('\n')
+            child.sendline('w')
+            print("Successful to Partition")
+        else:
+            # print("faild to Partition")
+            pass
+
+        # 手动分区
+        if yufenqu and fengquhao and start and end:
+            child = pexpect.spawn("sudo fdisk /dev/%s" % (yufenqu), timeout=3)
+            child.sendline('n')
+            child.sendline('p')
+            child.sendline('%s' % (fengquhao))
+            child.sendline('%s' % (start))
+            child.sendline('%s' % (end))
+            child.sendline('w')
+            print("Successful to Partition")
+        else:
+            # print("faild to Partition")
+            pass
+
+        # 磁盘挂载
+        if ygzcpm and wjjlj:
+            os.system("mkdir %s" % (wjjlj))
+            print("创建文件夹成功")
+            os.system("mount /dev/%s %s" % (ygzcpm, wjjlj))
+            print("挂载成功")
+        else:
+            pass
+
+    data_key = datapc().keys()
+    return render_template("San2.html",
+                           data_key=data_key,
+                           data=datapc()
+            )
 
 @app.route('/',methods=['GET','POST'])
 def hello_world():
-    #Diskdata=disk_view()
     lis_disk=[]
     Diskdata,Diskdata_pv=data_to_json()
-    if request.method == 'POST':
-        disk_Partition=request.values.get('hidden')
-        #print ('122' , type(disk_Partition),disk_Partition)
-        disk_pvcreate(disk_Partition)
-
+    # if request.method == 'POST':
+    #     disk_Partition=request.values.get('hidden')
+    #     #print ('122' , type(disk_Partition),disk_Partition)
+    #     disk_pvcreate(disk_Partition)
     return render_template('index.html',Diskdata=Diskdata,Diskdata_pv=Diskdata_pv)
 
 

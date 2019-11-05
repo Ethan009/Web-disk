@@ -6,6 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>网页管理系统磁盘</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{url_for('static',filename='layui/css/layui.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/admin.css')}}">
+  <script src={{url_for('static',filename='layui/layui.js')}}></script>
+  <script src=""></script>
     <style>
     .radio-wrap {
       width: 500px;
@@ -55,6 +59,8 @@
       margin-top: 20px;
     }
     #accordionExample {
+<!--      width: 800px;-->
+<!--      margin: 0 auto;-->
       margin-top: 20px;
     }
     .card-header {
@@ -62,7 +68,6 @@
       border-bottom: none;
     }
     .card {
-      border: none;
       border-bottom: 1px solid #ddd !important;
     }
     .card-body {
@@ -79,7 +84,7 @@
     }
     .disk-section {
       display: flex;
-      margin-left: 50px;
+      width: 200px;
     }
     .disk-desc-list .desc-item .title {
       width: 120px;
@@ -88,13 +93,22 @@
     .disk-desc-list .desc-item .content {
       flex: 1;
     }
+    .pvlis {
+      margin : auto 15px;
+      padding: 15px;
+    }
+    .iframeVG {
+      bgcolor : #F5F5F5
+      margin : 10px 10px
+    }
+
   </style>
 </head>
 
 <body>
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">OpenWRT</a>
+      <a class="navbar-brand" href="#">LVM管理工具</a>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item dropdown">
@@ -102,7 +116,7 @@
               Status
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Overview</a>
+              <a class="dropdown-item" href="www.baidu.com">Overview</a>
               <a class="dropdown-item" href="#">Firewall</a>
               <a class="dropdown-item" href="#">Routes</a>
               <a class="dropdown-item" href="#">System Log</a>
@@ -142,46 +156,58 @@
       </div>
     </nav>
 
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <ul class="nav flex-column" id="myTab" role="tablist" style="width:15%; float:left">
       <li class="nav-item">
-        <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">General Setting</a>
+        <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general" aria-selected="true">Overview</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="port-tab" data-toggle="tab" href="#port" role="tab" aria-controls="port" aria-selected="false">Port Forwards</a>
+        <a class="nav-link" id="port-tab" data-toggle="tab" href="#port" role="tab" aria-controls="port" aria-selected="false" onclick="pvs()">PV</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="trafffic-tab" data-toggle="tab" href="#trafffic" role="tab" aria-controls="trafffic" aria-selected="false">Trafffic Rlues</a>
+        <a class="nav-link" id="trafffic-tab" data-toggle="tab" href="#trafffic" role="tab" aria-controls="trafffic" aria-selected="false">VG</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="false">Custom Rules</a>
+        <a class="nav-link" id="custom-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="false">LV</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="other-tab" data-toggle="tab" href="#other" role="tab" aria-controls="oter" aria-selected="false">disk</a>
       </li>
     </ul>
-    <div class="tab-content" id="myTabContent">
+    <div class="tab-content" id="myTabContent" style="width:75%; margin:0 auto; float:left">
       <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
         <div>
-            <h2>Disk status</h2>
-            <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
-                <div class="accordion" id="accordionExample">
-                </div></div>
+          <div class="accordion" id="accordionExample"></div>
         </div>
       </div>
+
+<!--      第二個頁面 PV  -->
       <div class="tab-pane fade" id="port" role="tabpanel" aria-labelledby="port-tab">
-        <form action="/" method="POST">
-        <div class="radio-wrap" id="radioWrap"></div>
-           <input type="hidden" id="hidden" name="hidden" value=""
-                    placeholder="文件系统类型" />
-          <div class="btn-list">
-            <button type="submit" class="btn btn-primary" >确定</button>
-            <button type="button" class="btn btn-primary" id="test1">取消</button>
-          </div>
-         
-        </form>
+        <div class="pvlis">
+          <input type="button" value="create PV" onclick="createpv()"/>
+          <input type="button" value="delete PV" onclick="deletepv()"/>
+          <input type="button" value="scan PV" onclick="scanpv()"/>
+        </div>
+        <iframe  id="iframepv" frameborder="0" height="500px" width="100%" bgcolor="#F5F5F5"></iframe>
       </div>
+
+<!--VG頁面-->
       <div class="tab-pane fade" id="trafffic" role="tabpanel" aria-labelledby="trafffic-tab">
-        <div>{{Diskdata}}</div>
+        <div class="iframeVG">
+          <iframe src="{{url_for('web_vg')}}" frameborder="0" height="650px" width="100%"></iframe>
+        </div>
       </div>
       <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
-        <div>{{Diskdata_pv}}</div>
+        <div>
+          <h1>test</h1>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="other-tab">
+        <div>
+            <h1>
+             <iframe scrolling="yes" src="http://127.0.0.1:5000/San2"  id="xxx" frameborder="0" height="700px" width="800px"></iframe>
+            
+            </h1>
+        </div>
       </div>
     </div>
   </div>
@@ -189,26 +215,173 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script src={{url_for('static',filename="layer/layer.js")}}></script>
 </body>
-<!--url_for('static',filename="test/test1.html")-->
-<script>
-    $('#test1').on('click', function(){
-	layer.open({
-	  type: 2,
-	  area: ['700px', '450px'],
-	  fixed: false,
-	  maxmin: true,
-	  content: '{{url_for("layer_table")}}'
-	});
-  });
+
+<script type="text/javascript">
+function vgs(){
+var vgs = document.getElementById("iframevg");
+vgs.src = "{{url_for('web_vgs')}}";
+}
+function vgcreate(){
+var vgcreate = document.getElementById("iframevg");
+vgcreate.src = "{{url_for('web_vgcreate')}}";
+}
+function vgremove(){
+var vgremove = document.getElementById("iframevg");
+vgremove.src = "{{url_for('web_vgremove')}}"
+}
+
+
+
+function pvs(){
+var pvs = document.getElementById("iframepv");
+pvs.src = "{{url_for('web_pvs')}}";
+}
+function createpv(){
+var createpv = document.getElementById("iframepv");
+createpv.src = "{{url_for('web_pvcreate')}}";
+}
+function deletepv(){
+var deletepv = document.getElementById("iframepv");
+deletepv.src = "{{url_for('web_pvremove')}}";
+}
+function scanpv(){
+var scanpv = document.getElementById("iframepv");
+scanpv.src = "{{url_for('web_scanpv')}}";
+}
 </script>
 
+<script type="text/javascript">
+
+$(function(){
+  $("#login").on('click',function (event) {
+    $.ajax({
+        url:'http://0.0.0.0:7777/test_post/nn',
+        type:'POST',
+        dataType:'JSON',
+        success:function(data){
+        $("#tbody").html("");
+            for(i in data){
+	            tr =
+            	'<td >'+data[i].id+'</td>'+
+            	'<td >'+data[i].name+'</td>'+
+            	'<td >'+data[i].price+'</td>'+
+            	'<td >'+'<button  class="btn" id = "ok" type="button">其他</button>'+'</td>'
+               	$("#tbody").append('<tr class="parent" id="row_01">'+tr+'</tr>')
+            }
+        }
+    });
+    })
+    })
+</script>
+
+<script type="text/javascript">
+    $("input[name='disk-name']").change(function(){
+      var result = ' ';
+      $("input[name='disk-name']:checked").each(function(){
+          result+=$(this).val()+',';
+      })
+      $('#hidden').val(result);
+    });
+  </script>
+
 <script>
-  const data_show = {{Diskdata_pv|safe}}
- // [
-   // { disk: 'sda', options: ['sda1', 'sda2', 'sda3','sda4'] },
-    //{ disk: 'sdb', options: ['sdb1'] },
-    //{ disk: 'sdb', options: [] }
- // ]
+
+  $("#test").click(function(){
+  var pvcreate = $("#hidden").val()
+  $.ajax({
+    url:"http://127.0.0.1:5000/rev_partition",
+    type:"GET",
+    data:{
+        pvcreate:pvcreate
+    },
+    success:function (data) {
+        layer.open({
+        type: 2,
+        area: ['700px', '450px'],
+        fixed: false,
+        maxmin: true,
+        content: '{{url_for("layer_table")}}'
+      });
+
+
+      const data_show = {{ Diskdata_pv|safe }}
+      const radioWrap = $('#radioWrap')
+      let roiadhtml = ''
+      for(let i = 0; i < data_show.length; i++) {
+        const disk = data_show[i].disk
+        let optionsHtml = ''
+        for (let j = 0; j < data_show[i].options.length; j++) {
+          optionsHtml += `
+            <div class="radio-item">
+              <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}"
+              ${j === 0 ? 'checked' : ''}>${data_show[i].options[j]}</label>
+
+            </div>
+          `
+        }
+        roiadhtml += `
+          <div class="section">
+            <div class="title">${disk}</div>
+            <div class="radio-list">
+              ${optionsHtml}
+            </div>
+          </div>
+        `
+      }
+      radioWrap.html(roiadhtml)
+          },
+
+
+    error:function () {
+        alert("接收失败")
+       }
+  })
+  })
+</script>
+
+<script type="text/javascript">
+    $("#test111").click(function () {
+        $.getJSON("http://127.0.0.1:5000/change_to_json",function (data) {
+            $("#recv_content").val(data.message) //将后端数据显示在前端
+            console.log("传到前端的数据的类型：" + typeof (data.message))
+            $("#send_content").val("")
+        })
+    })
+</script>
+
+
+<script>
+  $("#send").click(function () {
+     var message = $("#send_content").val()
+     $.ajax({
+         url:"http://127.0.0.1:5000/send_message",
+         type:"GET",
+         pvdata:{
+             message:message
+         },
+         success:function (pvdata) {
+             alert(pvdata)
+         },
+         error:function () {
+             alert("接收失败")
+         }
+     })
+ })
+</script>
+
+<script type="text/javascript">
+    $("#send").click(function () {
+        $.getJSON("http://127.0.0.1:5000/change_to_json",function (data) {
+            $("#recv_content").val(data.message) //将后端数据显示在前端
+            console.log("传到前端的数据的类型：" + typeof (data.message))
+            $("#send_content").val("")
+        })
+    })
+</script>
+
+
+<script>
+const data_show = {{Diskdata_pv|safe}}
 const radioWrap = $('#radioWrap')
 let roiadhtml = ''
 for(let i = 0; i < data_show.length; i++) {
@@ -217,8 +390,7 @@ for(let i = 0; i < data_show.length; i++) {
   for (let j = 0; j < data_show[i].options.length; j++) {
     optionsHtml += `
       <div class="radio-item">
-        <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}"
-        ${j === 0 ? 'checked' : ''}>${data_show[i].options[j]}</label>
+        <label><input type="checkbox" id="disk-name" name="disk-name" value="${data_show[i].options[j]}">${data_show[i].options[j]}</label>
 
       </div>
     `
@@ -235,46 +407,43 @@ for(let i = 0; i < data_show.length; i++) {
 radioWrap.append(roiadhtml)
 </script>
 
-<script type="text/javascript">
-    $("input[name='disk-name']").change(function(){
-      var result = ' ';
-      $("input[name='disk-name']:checked").each(function(){
-          result+=$(this).val()+',';
-      })
-      $('#hidden').val(result);
-    });
-  </script>
 
 <script>
     const data = {{Diskdata|safe}}
-  //  [
-    //{ disk: 'sda', options: [{name: 'sda1', desc: '磁盘信息'}, {name: 'sda2', desc: '磁盘信息'}, {name: 'sda3', desc: '磁盘信息'}] },
-    //   { disk: 'sdb', options: [{name: 'sdbc', desc: '磁盘信息'}] },
-      // { disk: 'sdc', options: [] }
-    // ]
-    console.log(123);
     const accordionExample = $("#accordionExample")
     let html = ''
     let diskItemHtml = ''
     for (let i = 0; i < data.length; i++) {
       diskItemHtml = ''
+      diskItemHtml += `
+         <li class="desc-item">
+            <div class="disk-section">
+                <div class="content">磁盘分区名称：</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">分区文件系统类型：</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">挂载点：</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">进度等级：</div>
+            </div>
+         </li>
+      `
       for (let j = 0; j < data[i].options.length; j++) {
         diskItemHtml += `
           <li class="desc-item">
             <div class="disk-section">
-                <div class="title">磁盘分区名称：</div>
                 <div class="content">${data[i].options[j].name}</div>
             </div>
             <div class="disk-section">
-                <div class="title">分区文件系统类型：</div>
                 <div class="content">${data[i].options[j].file_system}</div>
             </div>
             <div class="disk-section">
-                <div class="title">挂载点：</div>
                 <div class="content">${data[i].options[j].file_name}</div>
             </div>
             <div class="disk-section">
-                <div class="title">进度等级：</div>
                 <div class="content">${data[i].options[j].status}</div>
             </div>
           </li>

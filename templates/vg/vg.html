@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Title</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .accordion{
+      margin : 10px 10px;
+    }
+    .card {
+      border-bottom: 1px solid #ddd !important;
+    }
+    .card-body {
+      padding: 0;
+    }
+    .disk-desc-list {
+      margin: 0 0 0 80px;
+      padding: 0;
+    }
+    .disk-desc-list .desc-item {
+      list-style: none;
+      display: flex;
+      margin-bottom: 10px;
+    }
+    .disk-section {
+      display: flex;
+      width: 200px;
+    }
+    .disk-desc-list .desc-item .title {
+      width: 120px;
+      color: #999;
+    }
+    .disk-desc-list .desc-item .content {
+      flex: 1;
+    }
+  </style>
+</head>
+<body >
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span6" style="width:50%; height:600px; float:left; background : #F5F5F5; margin : 10px 10px;">
+            <div class="accordion" id="accordionExample"></div>
+        </div>
+        <div class="span6" style="width:45%; height:100%; float:left ; margin : 10px 10px;">
+            <p>選擇要執行操作的VG名稱：</p>
+            <div style="float:left">
+                <select style="width: 100px;">
+                    {%for vgname in VGname %}
+                    <option value="{{vgname}}" selected>{{vgname}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <form action="">
+                <input type="text" id="selectfunct" name="selectvgname" value="">
+                </form>
+                <hr width="100%">
+            <div width="45%">
+                <p>操作已有VG</p>
+                <form action="">
+                <label ><input type="button" value="刪除" onclick="vgremove2()"></label>
+                <label ><input type="button" value="拓展" onclick=""></label>
+                <label ><input type="button" value="減少" onclick=""></label>
+                </form>
+            </div></div>
+            <hr width="100%">
+            <div style="width:45%; float:left">
+                <p>創建新的VG</p>
+                <input type="button" value="創建">
+            </div>
+
+        <div class="row-fluid">
+          <div class="span12" style="margin : 15px 15px;">
+              <iframe  id="iframevgfunction" src="http://www.baidu.com"
+                       frameborder="0" width="450px" height="330px"></iframe>
+          </div>
+        </div>
+        </div>
+	</div>
+</div>
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+
+<script>
+
+function vgremove2(){
+    var vgremoveiframe = document.getElementById("iframevgfunction");
+    vgremoveiframe.src = "{{url_for('web_vgremove')}}";
+}
+
+function vgrem(){
+    var vgname = $("#selectfunct").val()
+    $.ajax({
+    url:"{{url_for('web_vgremove')}}",
+    type:"GET",
+    data:{
+        vgname_web : vgname
+    },
+    success:function () {
+        alert("接收成功")
+          },
+    error:function () {
+        alert("接收失败")
+       }
+    })
+
+}
+
+</script>
+
+
+<script>
+    const vgdata = {{VGname|safe}}
+    const selectvg = $("#selectvgid")
+    let vghtml = ''
+    for (let i =0; i < vgdata.length; i++){
+      vghtml += `
+      <option value="${vgdata[i]}">${vgdata[i]}</option>
+      `
+    }
+    selectvg.append(vghtml)
+
+</script>
+
+<script type="text/javascript">
+$('select').change(function(){
+    $('#selectfunct').val($('select').val());
+  });
+</script>
+
+
+
+<script>
+    const data = {{VGdata|safe}}
+    const accordionExample = $("#accordionExample")
+    let html = ''
+    let diskItemHtml = ''
+    for (let i = 0; i < data.length; i++) {
+      diskItemHtml = ''
+      diskItemHtml += `
+         <li class="desc-item">
+            <div class="disk-section">
+                <div class="content">PV名称</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">PV大小</div>
+            </div>
+
+         </li>
+      `
+      for (let j = 0; j < data[i].options.length; j++) {
+        diskItemHtml += `
+          <li class="desc-item">
+            <div class="disk-section">
+                <div class="content">${data[i].options[j].pvname}</div>
+            </div>
+            <div class="disk-section">
+                <div class="content">${data[i].options[j].Size}</div>
+            </div>
+
+          </li>
+        `
+      }
+
+      html += `
+      <div class="card">
+        <div class="card-header" id="heading${i}">
+          <h5 class="mb-0">
+            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse${i}" aria-expanded="true" aria-controls="collapse${i}">
+              ${data[i].vgname}
+            </button>
+          </h5>
+        </div>
+
+        <div id="collapse${i}" class="collapse ${i === 0 ? 'show' : ''}" aria-labelledby="heading${i}" data-parent="#accordionExample">
+          <div class="card-body">
+            <ul class="disk-desc-list">
+              ${diskItemHtml}
+            </ul>
+          </div>
+        </div>
+      </div>
+      `
+    }
+
+    accordionExample.append(html)
+  </script>
+</html>
