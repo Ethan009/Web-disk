@@ -1,0 +1,51 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}默认标题{% endblock %}
+
+{% block navbar %}
+   <nav class="navbar navbar-inverse" style="border-radius: 0px;">
+       <div class="container">
+           <!-- Brand and toggle get grouped for better mobile display -->
+           <div class="navbar-header">
+               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                       data-target=".navbar-collapse" aria-expanded="false">
+                   <span class="sr-only">Toggle navigation</span>
+                   <span class="icon-bar"></span>
+                   <span class="icon-bar"></span>
+                   <span class="icon-bar"></span>
+               </button>
+               <a class="navbar-brand" href="http://127.0.0.1:9090">首页</a>
+           </div>
+
+           <!-- Collect the nav links, forms, and other content for toggling -->
+           <div class="collapse navbar-collapse">
+               <ul class="nav navbar-nav">
+                   <li><a href="{{url_for('lvm.getpv')}}">安装LVM</a></li>
+
+                   <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">功能(Logical volume Manager)</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="#">OverView</a>
+                      <a class="dropdown-item" href="#">Physical Volume</a>
+                      <a class="dropdown-item" href="#">Volume group</a>
+                      <a class="dropdown-item" href="#">Logical Volume</a>
+                    </div>
+                  </li>
+
+               </ul>
+
+               <ul class="nav navbar-nav navbar-right">
+                   <li><a href="#">注册</a></li>
+                   <li><a href="#">登录</a></li>
+               </ul>
+           </div><!-- /.navbar-collapse -->
+       </div><!-- /.container -->
+   </nav>
+{% endblock %}
+
+{% block content %}
+   <div class="container">
+       {% block page_content %}默认内容{% endblock %}
+   </div>
+{% endblock %}

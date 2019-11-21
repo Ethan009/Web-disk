@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask,render_template,request,jsonify
+from flask import Flask,render_template,request,jsonify,Blueprint,views
 import difflib
 import re
 import os
 import sys
 import subprocess
 import pexpect
+from lvm_flask import lvmStart
+from flask_bootstrap import Bootstrap
 
 
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
+#app.config['SERVER_NAME'] = 'crop.com:9099'
+
+
 
 def shell_pvcreate(str_disk):
     str_disk_name='/dev/%s' % str_disk
@@ -23,6 +29,7 @@ def shell_pvcreate(str_disk):
         else:
             print ('%s fail created' % str_disk_name)
             return False
+
 
 def shell_pvremove(str_disk):
     if str_disk:
@@ -425,6 +432,15 @@ def hello():
                            data=datapc()
             )
 
+class a(views.View):
+    def a(self):
+        return 'aa'
+
+app.add_url_rule('/a/',endpoint='a',view_func=a.as_view('a'))
+
+
+app.register_blueprint(lvmStart)
+
 @app.route('/',methods=['GET','POST'])
 def hello_world():
     lis_disk=[]
@@ -438,4 +454,4 @@ def hello_world():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run( debug=True,port=9090)

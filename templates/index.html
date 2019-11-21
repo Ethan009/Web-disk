@@ -105,7 +105,7 @@
   </style>
 </head>
 
-<body>
+<body bgcolor="#F0FFFF">
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <a class="navbar-brand" href="#">LVM管理工具</a>
@@ -116,7 +116,7 @@
               Status
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="www.baidu.com">Overview</a>
+              <a class="dropdown-item" href="http://127.0.0.1:9090/lvmStart">Overview</a>
               <a class="dropdown-item" href="#">Firewall</a>
               <a class="dropdown-item" href="#">Routes</a>
               <a class="dropdown-item" href="#">System Log</a>
@@ -193,7 +193,7 @@
 <!--VG頁面-->
       <div class="tab-pane fade" id="trafffic" role="tabpanel" aria-labelledby="trafffic-tab">
         <div class="iframeVG">
-          <iframe src="{{url_for('web_vg')}}" frameborder="0" height="650px" width="100%"></iframe>
+          <iframe src="{{url_for('web_vg')}}" scrolling="no" frameborder="0" height="650px" width="100%"></iframe>
         </div>
       </div>
       <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
@@ -335,16 +335,6 @@ $(function(){
        }
   })
   })
-</script>
-
-<script type="text/javascript">
-    $("#test111").click(function () {
-        $.getJSON("http://127.0.0.1:5000/change_to_json",function (data) {
-            $("#recv_content").val(data.message) //将后端数据显示在前端
-            console.log("传到前端的数据的类型：" + typeof (data.message))
-            $("#send_content").val("")
-        })
-    })
 </script>
 
 
