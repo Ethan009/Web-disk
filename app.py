@@ -140,6 +140,25 @@ def shell_vgreduce(vg_name,reduce_pv):
             print('%s fail reduceed' % vg_name)
             return False
 
+def shell_install_lvm2():
+    shell='apt install lvm2'
+    child=pexpect.spawn(str(shell))
+    i = child.expect(['Do you want to continue?',pexpect.TIMEOUT , pexpect.EOF])
+    if i == 0 :
+        child.sendline('Y')
+        child.close()
+        return True
+    else:
+        return False
+
+def shell_lvm():
+    if shell_install_lvm2():
+        child=pexpect.spawn('lvm')
+        i = child.expect('lvm>')
+        if i == 0 :
+            child.sendline('exit')
+            return True
+
 def datapc():
 
     datapc = subprocess.getoutput("lsblk -lf ")
