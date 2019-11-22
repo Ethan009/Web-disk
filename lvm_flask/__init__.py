@@ -9,7 +9,6 @@ class allLvm(views.View):
     def getpv(self):
         return 'get_pv'
 
-
 @lvmStart.errorhandler(404)
 def page_not_found(e):
    return render_template('404.html')
