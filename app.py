@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 from flask import Flask,render_template,request,jsonify,Blueprint,views
 import difflib
 import re
@@ -8,10 +9,12 @@ import sys
 import subprocess
 import pexpect
 from lvm_flask import lvmStart
+from datetime import timedelta
 #from flask_bootstrap import Bootstrap
 
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = timedelta(seconds=1)
 #bootstrap = Bootstrap(app)
 
 

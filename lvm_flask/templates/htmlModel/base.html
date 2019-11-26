@@ -9,55 +9,42 @@
 
   {% block styles %}
   <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./static/myCSS.css">
   {% endblock %}
-
 </head>
 
 <body>
 {% block navbar %}
   <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">LVM管理工具</a>
+	  <div id="nav-home" style="width:200px;padding: inherit;"><a class="navbar-brand" href="http://127.0.0.1:9090">首页</a></div>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Status
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+			   aria-haspopup="true" aria-expanded="false">
+              磁盘管理工具
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="http://127.0.0.1:9090/lvmStart">Overview</a>
-              <a class="dropdown-item" href="#">Firewall</a>
-              <a class="dropdown-item" href="#">Routes</a>
-              <a class="dropdown-item" href="#">System Log</a>
-              <a class="dropdown-item" href="#">Kernel Log</a>
-              <a class="dropdown-item" href="#">Processes</a>
-              <a class="dropdown-item" href="#">Realtime Graphs</a>
+              <a class="dropdown-item" href="#">磁盘展示</a>
+              <a class="dropdown-item" href="#">磁盘分区</a>
+              <a class="dropdown-item" href="#">磁盘挂载</a>
             </div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              System
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+			   aria-haspopup="true" aria-expanded="false">
+              LVM管理工具
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="{{url_for('lvm./')}}">总览</a>
+			  <a class="dropdown-item" href="#">LVM安装</a>
+			  <a class="dropdown-item" href="#">功能详情页</a>
+				<hr>
+			  <a class="dropdown-item" href="#">帮助</a>
             </div>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Services
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-            </div>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Network
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-            </div>
-          </li>
+
           <li class="nav-item">
             <a class="nav-link" href="#">Logout</a>
           </li>
@@ -77,7 +64,7 @@
 
 {% block scripts %}
   <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src="./static/js/bootstrap.min.js"></script>
 {% endblock %}
 
 </body>

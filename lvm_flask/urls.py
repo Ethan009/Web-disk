@@ -3,7 +3,7 @@ from source import lvmShell
 
 class lvmHome(views.View):
     def dispatch_request(self):
-        return render_template('htmlModel/base.html')
+        return render_template('lvmStart.html')
 
 class lvmInstall(views.View):
     def dispatch_request(self):
