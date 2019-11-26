@@ -1,24 +1,13 @@
 #coding:utf-8
-from flask import Flask,render_template,Blueprint,views,url_for,jsonify
-from .Conf import config_lvm as conf
+from flask import Blueprint,url_for
+from lvm_flask import urls
 
+lvmHome=urls.lvmHome()
+lvmInstall=urls.lvmInstall()
+lvmShow=urls.lvmShow()
 
 lvmStart = Blueprint('lvm', __name__, static_folder='static', template_folder='templates', url_prefix='/lvmStart')
 
-class allLvm(views.View):
-    def getpv(self):
-        return 'get_pv'
-
-@lvmStart.errorhandler(404)
-def page_not_found(e):
-   return render_template('404.html')
-
-@lvmStart.route('/',methods=['GET','POST'])
-def lvm_start():
-    return render_template('lvmStart.html')
-
-
-lvmStart.add_url_rule('/getpv/',endpoint='getpv',view_func=allLvm.as_view('getpv'))
-
-
-#print ('url:',url_for('lvmStart.getpv'))
+lvmStart.add_url_rule('/', view_func=lvmHome.as_view('/'))
+lvmStart.add_url_rule('/lvmInstall/', endpoint='lvmInstall', view_func=lvmInstall.as_view('lvmInstall'))
+lvmStart.add_url_rule('/lvmShow/', endpoint='lvmShow', view_func=lvmShow.as_view('lvmShow'))

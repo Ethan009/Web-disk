@@ -8,14 +8,11 @@ import sys
 import subprocess
 import pexpect
 from lvm_flask import lvmStart
-from flask_bootstrap import Bootstrap
-
+#from flask_bootstrap import Bootstrap
 
 
 app = Flask(__name__)
-bootstrap = Bootstrap(app)
-#app.config['SERVER_NAME'] = 'crop.com:9099'
-
+#bootstrap = Bootstrap(app)
 
 
 def shell_pvcreate(str_disk):
@@ -268,12 +265,13 @@ def rev_partition():
     data_table=[]
     rev_data = request.args['pvcreate'].strip()
     rev_data=rev_data.split(',')
+    print ('test1')
     for data in rev_data:
         if data:
             if shell_pvcreate(data):
                 data_table.append({'disk':data ,'status': 'True'})
             else:
-                data_table.append({'disk':data ,'status': 'fales'})
+                data_table.append({'disk':data ,'status': 'false'})
     return 'test'
 
 @app.route('/pvremove')
@@ -314,12 +312,8 @@ def web_vg():
     vg_name=shell_vgdisplay_vgname()
     if request.method=='GET':
         data=request.values.get('selectfunct')
-        print ('data',data)
     return render_template('vg/vg.html',VGdata=vg_data,VGname=vg_name)
 
-@app.route('/pvremove_feeback')
-def pvremove_feedback():
-    return render_template('pv/pvremove_feedback.html')
 
 @app.route('/pvs')
 def web_pvs():
@@ -431,12 +425,6 @@ def hello():
                            data_key=data_key,
                            data=datapc()
             )
-
-class a(views.View):
-    def a(self):
-        return 'aa'
-
-app.add_url_rule('/a/',endpoint='a',view_func=a.as_view('a'))
 
 
 app.register_blueprint(lvmStart)

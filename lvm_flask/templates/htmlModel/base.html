@@ -1,51 +1,84 @@
-{% extends 'bootstrap/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-{% block title %}默认标题{% endblock %}
+  {% block title %}<title>网页管理LVM</title>{% endblock %}
 
+  {% block styles %}
+  <link rel="stylesheet" href="./static/css/bootstrap.min.css">
+  {% endblock %}
+
+</head>
+
+<body>
 {% block navbar %}
-   <nav class="navbar navbar-inverse" style="border-radius: 0px;">
-       <div class="container">
-           <!-- Brand and toggle get grouped for better mobile display -->
-           <div class="navbar-header">
-               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                       data-target=".navbar-collapse" aria-expanded="false">
-                   <span class="sr-only">Toggle navigation</span>
-                   <span class="icon-bar"></span>
-                   <span class="icon-bar"></span>
-                   <span class="icon-bar"></span>
-               </button>
-               <a class="navbar-brand" href="http://127.0.0.1:9090">首页</a>
-           </div>
-
-           <!-- Collect the nav links, forms, and other content for toggling -->
-           <div class="collapse navbar-collapse">
-               <ul class="nav navbar-nav">
-                   <li><a href="{{url_for('lvm.getpv')}}">安装LVM</a></li>
-
-                   <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">功能(Logical volume Manager)</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" href="#">OverView</a>
-                      <a class="dropdown-item" href="#">Physical Volume</a>
-                      <a class="dropdown-item" href="#">Volume group</a>
-                      <a class="dropdown-item" href="#">Logical Volume</a>
-                    </div>
-                  </li>
-
-               </ul>
-
-               <ul class="nav navbar-nav navbar-right">
-                   <li><a href="#">注册</a></li>
-                   <li><a href="#">登录</a></li>
-               </ul>
-           </div><!-- /.navbar-collapse -->
-       </div><!-- /.container -->
-   </nav>
+  <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">LVM管理工具</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Status
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="http://127.0.0.1:9090/lvmStart">Overview</a>
+              <a class="dropdown-item" href="#">Firewall</a>
+              <a class="dropdown-item" href="#">Routes</a>
+              <a class="dropdown-item" href="#">System Log</a>
+              <a class="dropdown-item" href="#">Kernel Log</a>
+              <a class="dropdown-item" href="#">Processes</a>
+              <a class="dropdown-item" href="#">Realtime Graphs</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              System
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Action</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Services
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Action</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Network
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Action</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
 {% endblock %}
 
 {% block content %}
-   <div class="container">
-       {% block page_content %}默认内容{% endblock %}
-   </div>
+<div class="container">
+    {% block page_content %}
+        <h1>默认内容</h1>
+	{% endblock %}
+</div>
 {% endblock %}
+
+{% block scripts %}
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+{% endblock %}
+
+</body>
+</html>

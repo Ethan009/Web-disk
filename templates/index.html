@@ -9,7 +9,6 @@
   <link rel="stylesheet" href="{{url_for('static',filename='layui/css/layui.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/admin.css')}}">
   <script src={{url_for('static',filename='layui/layui.js')}}></script>
-  <script src=""></script>
     <style>
     .radio-wrap {
       width: 500px;
@@ -287,7 +286,7 @@ $(function(){
   $("#test").click(function(){
   var pvcreate = $("#hidden").val()
   $.ajax({
-    url:"http://127.0.0.1:5000/rev_partition",
+    url:"http://127.0.0.1:9090/rev_partition",
     type:"GET",
     data:{
         pvcreate:pvcreate
