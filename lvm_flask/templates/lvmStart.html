@@ -3,11 +3,100 @@
 {% block title %}<title>网页管理LVM</title>{% endblock %}
 
 {% block page_content %}
-<br>
-<h3>Disk:</h3>
-<hr>
-<div id="diskShow" style="width:100%;height:300px;border:1px solid #000;border-radius: 20px;">
-    test
+<style>
+    .first{
+        width: 30%;
+        height: 300px;
+        border: 2px solid #000;
+        float: left;
+        border-radius: 30px;
+        display: inline-block;
+        margin: 1.5%;
+    }
+    .grid{
+        width:1100px;
+        margin:0 auto;
+    }
+    .ui-ul{
+        height:auto;
+        overflow-y: hidden;;
+        list-style: none;
+        margin-right:-15px;
+        margin-left: 15px;
+        padding: 0;
+    }
+    .ui-ul li{
+        width:180px;
+        height:50px;
+        padding:8px 5px 5px 5px;
+        float: left;
+        border:1px solid #ccc;
+        margin-right:0;
+        background-color: #E7EAED;
+    }
+</style>
+<div style="width: 80%; margin: auto auto">
+    <div style="width:100%; height: 300px; border-radius: 30px ">
+        <div style="text-align: center;"><h2>Disk</h2>
+            <hr></div>
+        <div class="grid">
+            <div>
+
+                <div class="ui-relative">
+                    <h3 style="float: left;margin: 8px 20px 5px 20px">sdc</h3>
+                    <ul class="ui-ul">
+                        <li>
+                            <h4 class="tit">sdc1</h4>
+                        </li>
+                        <li>
+                            <h4 class="tit">sdc2</h4>
+                        </li>
+                        <li>
+                            <h4 class="tit">sdc3</h4>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr style = "border: 1px solid #BABAA8">
+        <div class="first" title="PV">
+            <div style="width: 80%; margin: auto auto">
+            <h3 style="margin-top:15px;">PV</h3>
+            <hr></div>
+            <div>
+                <ul>
+                    <li>pv1</li>
+                    <li>pv2</li>
+                    <li>pv3</li>
+                </ul>
+            </div>
+        </div>
+        <div class="first" title="VG">
+            <div style="width: 80%; margin: auto auto">
+            <h3 style="margin-top:15px;">VG</h3>
+            <hr></div>
+            <div>
+                <ul>
+                    <li>vg1</li>
+                    <li>vg2</li>
+                    <li>vg3</li>
+                </ul>
+            </div>
+        </div>
+        <div class="first" title="LV">
+            <div style="width: 80%; margin: auto auto">
+            <h3 style="margin-top:15px;">LV</h3>
+            <hr></div>
+            <div>
+                <ul>
+                    <li>lv1</li>
+                    <li>lv2</li>
+                    <li>lv3</li>
+                </ul>
+            </div>
+        </div>
 </div>
+
 
 {% endblock %}

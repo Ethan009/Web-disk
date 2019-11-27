@@ -1,7 +1,154 @@
 {% extends 'htmlModel/base.html' %}
 
-{% block title %}LVM总览{% endblock %}
+{% block title %}<title>LVM总览</title>{% endblock %}
 
 {% block page_content %}
-<h1>This is LVM 功能详情页</h1>
+<div>
+<br>
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general"
+       aria-selected="true">Physical Volume</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" id="port-tab" data-toggle="tab" href="#port" role="tab" aria-controls="port"
+       aria-selected="false">Volume Group</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="trafffic-tab" data-toggle="tab" href="#trafffic" role="tab" aria-controls="trafffic"
+       aria-selected="false">Logical Volume</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <!-- 第一个模块开始 -->
+  <!--    创建PV-->
+  <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
+    <div style="width:100%; height:330px; background-color: #E7EAED;">
+      <br>
+      <h4 style="margin-left:30px;">创建PV</h4><hr>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1" style="float:left;margin:5px 20px auto 40px">选择磁盘或磁盘分区</label>
+        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+        <br>
+        <div>
+        <p style="margin-left:40px; float:left; margin-right: 35px;">已选择的磁盘分区</p>
+        <textarea rows="3" cols="30">
+        </textarea>
+        <a href="">手动编辑</a>
+        </div>
+        <hr>
+        <input type="submit" value="确认" style=" margin-left:50px;">
+    </div>
+<!--      删除PV-->
+      <div style="width:100%; height:330px; background-color: #E7EAED; margin-top:10px;">
+        <br>
+      <h4 style="margin-left:30px;">删除PV</h4><hr>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1" style="float:left;margin:5px 20px auto 40px">选择磁盘或磁盘分区</label>
+        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+        <br>
+        <div>
+        <p style="margin-left:40px; float:left; margin-right: 35px;">已选择的磁盘分区</p>
+        <textarea rows="3" cols="30">
+        </textarea>
+        <a href="">手动编辑</a>
+        </div>
+        <hr>
+        <input type="submit" value="确认" style=" margin-left:50px;">
+      </div>
+  </div>
+  <!-- 第一个模块结束 -->
+
+  <!-- 第二个模块开始 -->
+  <div class="tab-pane fade show active" id="port" role="tabpanel" aria-labelledby="port-tab">
+    <div style="width:100%; height:350px; background-color: #E7EAED;">
+      <br>
+      <h4 style="margin-left:30px;">创建VG</h4><hr>
+        <div class="form-group">
+        <label for="exampleFormControlSelect1" style="float:left;margin:5px 20px auto 40px">选择PV或磁盘分区</label>
+        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+        <div>
+        <p style="margin-left:40px; float:left; margin-right: 25px;">已选择的磁盘分区</p>
+        <textarea rows="3" cols="30">
+        </textarea>
+        <a href="">手动编辑</a>
+        </div>
+        <div>
+        <label for="exampleFormControlSelect1" style="float:left;margin:15px 50px auto 40px">输入VG的名字</label>
+          <input type="text" style="width:200px;margin-top:10px;">
+      </div>
+        <hr>
+        <input type="submit" value="确认" style=" margin-left:50px; ">
+    </div>
+
+
+<!--    删除VG-->
+    <div style="width:100%; height:200px; background-color: #E7EAED; margin-top:10px;">
+        <br>
+      <h4 style="margin-left:30px;">删除VG</h4><hr>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1" style="float:left;margin:5px 35px auto 40px">选择删除的VG</label>
+        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+        <hr>
+        <input type="submit" value="确认" style=" margin-left:50px;">
+      </div>
+
+    </div>
+
+<!--拓展VG-->
+    <div style="width:100%; height:300px; background-color: #E7EAED; margin-top:10px;">
+    <br>
+      <h4 style="margin-left:30px;">拓展VG</h4><hr>
+      <div class="form-group">
+        <label for="exampleFormControlSelect1" style="float:left;margin:5px 35px auto 40px">选择拓展的VG</label>
+        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+    <hr>
+    <input type="submit" value="确认" style=" margin-left:50px;">
+  </div>
+  </div>
+  <!-- 第二个模块结束 -->
+
+  <!-- 第三个模块开始 -->
+  <div class="tab-pane fade" id="trafffic" role="tabpanel" aria-labelledby="trafffic-tab">
+    Trafffic Rlues
+  </div>
+  <!-- 第三个模块结束 -->
+
+</div>
+</div>
 {% endblock %}
