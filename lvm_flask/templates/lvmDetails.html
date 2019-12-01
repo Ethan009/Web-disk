@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>TiTle</title>
+
+    <link rel="stylesheet" type="text/css" href="css/nav.css">
+    <link rel="stylesheet" type="text/css" href="font/iconfont.css">
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script type="text/javascript" src="js/nav.js"></script>
+
+    <style>
+        /* 以下实际使用若已初始化可删除 .nav height父级需逐级设置为100%*/
+        body, html {
+            height: 100%;
+            background: #E2E2E2
+        }
+
+        body, ul {
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font: 14px "微软雅黑", "宋体", "Arial Narrow", HELVETICA;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        li {
+            list-style: none
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* 以上实际使用若已初始化可删除 */
+
+        /* nav */
+        .nav {
+            width: 220px;
+            height: 100%;
+            background: #263238;
+            transition: all .3s;
+        }
+
+        .nav a {
+            display: block;
+            overflow: hidden;
+            padding-left: 20px;
+            line-height: 46px;
+            max-height: 46px;
+            color: #ABB1B7;
+            transition: all .3s;
+        }
+
+        .nav a span {
+            margin-left: 30px;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item.nav-show {
+            border-bottom: none;
+        }
+
+        .nav-item ul {
+            display: none;
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .nav-item.nav-show ul {
+            display: block;
+        }
+
+        .nav-item > a:before {
+            content: "";
+            position: absolute;
+            left: 0px;
+            width: 2px;
+            height: 46px;
+            background: #34A0CE;
+            opacity: 0;
+            transition: all .3s;
+        }
+
+        .nav .nav-icon {
+            font-size: 20px;
+            position: absolute;
+            margin-left: -1px;
+        }
+
+        /* 此处修改导航图标 可自定义iconfont 替换*/
+        .icon_1::after {
+            content: "▶";
+        }
+
+        .icon_2::after {
+            content: "\e669";
+        }
+
+        .icon_3::after {
+            content: "\e61d";
+        }
+
+        i {
+
+            font-size: 15px !important;
+            color: cadetblue;
+        }
+
+        /*---------------------*/
+        .nav-more {
+            float: right;
+            margin-right: 20px;
+            font-size: 12px;
+            transition: transform .3s;
+        }
+
+        /* 此处为导航右侧箭头 如果自定义iconfont 也需要替换*/
+        .nav-more::after {
+            content: "→";
+        }
+
+
+        /*---------------------*/
+        .nav-show .nav-more {
+            transform: rotate(90deg);
+        }
+
+        .nav-show, .nav-item > a:hover {
+            color: #FFF;
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .nav-show > a:before, .nav-item > a:hover:before {
+            opacity: 1;
+        }
+
+        .nav-item li:hover a {
+            color: #FFF;
+            background: rgba(0, 0, 0, .1);
+        }
+
+        /* nav-mini */
+        .nav-mini.nav {
+            width: 60px;
+        }
+
+        .nav-mini.nav .nav-icon { /* margin-left:-2px; */
+        }
+
+        .nav-mini.nav .nav-item > a span {
+            display: none;
+        }
+
+        .nav-mini.nav .nav-more {
+            margin-right: -20px;
+        }
+
+        .nav-mini.nav .nav-item ul {
+            position: absolute;
+            top: 0px;
+            left: 60px;
+            width: 180px;
+            z-index: 99;
+            background: #3C474C;
+            overflow: hidden;
+        }
+
+        .nav-mini.nav .nav-item:hover {
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .nav-mini.nav .nav-item:hover .nav-item a {
+            color: #FFF;
+        }
+
+        .nav-mini.nav .nav-item:hover a:before {
+            opacity: 1;
+        }
+
+        .nav-mini.nav .nav-item:hover ul {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<div class="nav">
+    <div class="nav-top">
+        <div id="mini" style="border-bottom:1px solid rgba(255,255,255,.1)"><img src="mini.png" alt="" style="float:left;"></div>
+
+        <div><h4 style="color: #E6E6E6">&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp菜单</h4></div>
+    </div>
+    <ul id="aat">
+
+    </ul>
+</div>
+
+<div style="text-align:center;margin:-650px 0; font:normal 14px/24px 'MicroSoft YaHei';">
+    <p style="font-size: 30px">详细信息</p>
+    <div>
+        <h4 style="margin-left:40px;">↓↓↓↓↓↓↓↓↓↓</h4>
+        <iframe src="details.html" height="450" width="550" style="border:medium double rgb(48,10,36)">
+            <p>Your browser does not support iframe.</p>
+        </iframe>
+    </div>
+    <p>来源：<a href="http://www.baidu.com/" target="_blank">百度资源</a></p>
+   
+</div>
+<script>
+    $(function () {
+        const navList = [
+            {
+                "p": "Disk",
+                "c": ["sda","sdb","sdc", "sdf"],
+                "d": ["分区1", "分区2", "分区3", "分区4", "分区5"]
+            },
+            {
+                "p": "PV",
+                "c": ["PV1", "PV2", "PV3"]
+            },
+            {
+                "p": "VG",
+                "c": ["VG1", "VG2", "VG3", "VG4"]
+            },
+            {
+                "p": "LV",
+                "c": ["LV1", "LV2", "LV3", "LV4", "LV5"]
+            }
+        ];
+        let navData = '';
+        for (let i = 0; i < navList.length; i++) {
+            navData += "<li class='nav-item'><a href='javascript:;'><i class='my-icon nav-icon icon_1'></i><span>" + navList[i].p + "</span><i class='my-icon nav-more'></i></a><ul>"
+            for (let w = 0; w < navList[i].c.length; w++) {
+                navData += "<li><a href='javascript:;'><span>" + navList[i].c[w] + "</span></a></li>"
+            }
+            navData += "</ul></li>"
+        }
+        console.log(navData)
+        $('#aat').html(navData)
+    })
+</script>
+</body>
+<script>
+    $(function () {
+        // nav收缩展开
+        $('#aat').on('click', '.nav-item>a', function () {
+            if (!$('.nav').hasClass('nav-mini')) {
+                if ($(this).next().css('display') == "none") {
+                    //展开未展开
+                    $('.nav-item').children('ul').slideUp(300);
+                    $(this).next('ul').slideDown(300);
+                    $(this).parent('li').addClass('nav-show').siblings('li').removeClass('nav-show');
+                } else {
+                    //收缩已展开
+                    $(this).next('ul').slideUp(300);
+                    $('.nav-item.nav-show').removeClass('nav-show');
+                }
+            }
+        });
+        // 标志点击样式
+        $('#aat').on('click', '.nav-item>ul>li', function () {
+            $('.nav-item>ul>li').css('background', 'none')
+            $(this).css('background', '#E2E2E2')
+//  	$(this).siblings().css('background','none')
+        })
+        //nav-mini切换
+        $('#mini').on('click', function () {
+            if (!$('.nav').hasClass('nav-mini')) {
+                $('.nav-item.nav-show').removeClass('nav-show');
+                $('.nav-item').children('ul').removeAttr('style');
+                $('.nav').addClass('nav-mini');
+            } else {
+                $('.nav').removeClass('nav-mini');
+            }
+        });
+    });
+</script>
+</html>

@@ -247,8 +247,6 @@ def all_vg_pv():
 
 
 
-
-
 @app.route('/receive_pvremove')
 def receive_pvremove():
     global pvremove_data
@@ -268,7 +266,6 @@ def rev_partition():
     data_table=[]
     rev_data = request.args['pvcreate'].strip()
     rev_data=rev_data.split(',')
-    print ('test1')
     for data in rev_data:
         if data:
             if shell_pvcreate(data):

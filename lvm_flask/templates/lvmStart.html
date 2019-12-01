@@ -6,7 +6,7 @@
 <style>
     .first{
         width: 30%;
-        height: 300px;
+        height: 400px;
         border: 2px solid #000;
         float: left;
         border-radius: 30px;
@@ -14,7 +14,7 @@
         margin: 1.5%;
     }
     .grid{
-        width:1100px;
+        width:100%;
         margin:0 auto;
     }
     .ui-ul{
@@ -33,28 +33,34 @@
         border:1px solid #ccc;
         margin-right:0;
         background-color: #E7EAED;
+        text-align: center;
     }
+
 </style>
+
 <div style="width: 80%; margin: auto auto">
-    <div style="width:100%; height: 300px; border-radius: 30px ">
+    <div style="width:100%; border-radius: 30px ">
         <div style="text-align: center;"><h2>Disk</h2>
             <hr></div>
         <div class="grid">
             <div>
-
                 <div class="ui-relative">
-                    <h3 style="float: left;margin: 8px 20px 5px 20px">sdc</h3>
+                    {% for diskData in allDiskData %}
+                    <h3 style="float: left;margin: 8px 20px 5px 20px">{{ diskData['disk'] }}</h3>
                     <ul class="ui-ul">
+                        {% if diskData['options'] %}
+                        {% for partitionName in diskData['options'] %}
                         <li>
-                            <h4 class="tit">sdc1</h4>
+                            <h5 class="tit">{{partitionName}}</h5>
                         </li>
+                        {% endfor %}
+                        {% else %}
                         <li>
-                            <h4 class="tit">sdc2</h4>
+                            <h5 class="tit">{{diskData['disk']}}</h5>
                         </li>
-                        <li>
-                            <h4 class="tit">sdc3</h4>
-                        </li>
+                        {% endif %}
                     </ul>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -65,11 +71,22 @@
             <h3 style="margin-top:15px;">PV</h3>
             <hr></div>
             <div>
+                {% if lenPVName < 10 %}
                 <ul>
-                    <li>pv1</li>
-                    <li>pv2</li>
-                    <li>pv3</li>
+                    {% for PVName in allPVName %}
+                      <li>{{ PVName }}</li>
+                    {% endfor %}
                 </ul>
+                {% else %}
+                <ul>
+                    {% for i in range(10) %}
+                      <li>{{ allPVName[i] }}</li>
+                    {% endfor %}
+                </ul>
+                <div style="float:right; margin-right:15px;">
+                    <button type="button" onclick="LayerShowLvm()">查看所有PV</button>
+                </div>
+                {% endif %}
             </div>
         </div>
         <div class="first" title="VG">
@@ -77,11 +94,22 @@
             <h3 style="margin-top:15px;">VG</h3>
             <hr></div>
             <div>
+                {% if lenVGName < 10 %}
                 <ul>
-                    <li>vg1</li>
-                    <li>vg2</li>
-                    <li>vg3</li>
+                    {% for VGName in allVGName %}
+                      <li>{{ VGName }}</li>
+                    {% endfor %}
                 </ul>
+                {% else %}
+                <ul>
+                    {% for i in range(10) %}
+                      <li>{{ allVGName[i] }}</li>
+                    {% endfor %}
+                </ul>
+                <div style="float:right; margin-right:15px;">
+                    <button type="button" onclick="LayerShowLvm()">查看所有VG</button>
+                </div>
+                {% endif %}
             </div>
         </div>
         <div class="first" title="LV">
@@ -89,14 +117,42 @@
             <h3 style="margin-top:15px;">LV</h3>
             <hr></div>
             <div>
+                {% if lenLVName < 10 %}
                 <ul>
-                    <li>lv1</li>
-                    <li>lv2</li>
-                    <li>lv3</li>
+                    {% for LVName in allLVName %}
+                      <li>{{ LVName }}</li>
+                    {% endfor %}
                 </ul>
+                {% else %}
+                <ul>
+                    {% for i in range(10) %}
+                      <li>{{ allLVName[i] }}</li>
+                    {% endfor %}
+                </ul>
+                <div style="float:right; margin-right:15px;">
+                    <button type="button" onclick="LayerShowLvm()">查看所有LV</button>
+                </div>
+                {% endif %}
             </div>
         </div>
 </div>
 
+<script>
+function LayerShowLvm(){
+  layer.tab({
+      area: ['600px', '300px'],
+      tab: [{
+        title: 'TAB1',
+        content: '<li>/dev/sda2</li>'
+      }, {
+        title: 'TAB2',
+        content: ''
+      }, {
+        title: 'TAB3',
+        content: ''
+      }]
+    });
+}
+</script>
 
 {% endblock %}

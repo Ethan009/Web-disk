@@ -41,6 +41,7 @@
 			  <a class="dropdown-item" href="{{url_for('lvm.lvmInstall')}}">LVM安装</a>
 			  <a class="dropdown-item" href="{{url_for('lvm.lvmShow')}}">功能详情页</a>
 				<hr>
+              <a class="dropdown-item" href="#">详情页</a>
 			  <a class="dropdown-item" href="#">帮助</a>
             </div>
           </li>
@@ -65,6 +66,8 @@
 {% block scripts %}
   <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
   <script src="../static/js/bootstrap.min.js"></script>
+  <script src={{url_for('static',filename="layer/layer.js")}}></script>
+  <script src={{url_for('static',filename="myJavascript.js")}}></script>
 {% endblock %}
 
 </body>

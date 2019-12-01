@@ -5,13 +5,13 @@
 {% block page_content %}
 <div>
 <br>
-<ul class="nav nav-tabs" id="myTab" role="tablist">
+<ul class="nav nav-tabs active" id="myTab" role="tablist">
   <li class="nav-item">
     <a class="nav-link " id="general-tab" data-toggle="tab" href="#general" role="tab" aria-controls="general"
        aria-selected="true">Physical Volume</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link active" id="port-tab" data-toggle="tab" href="#port" role="tab" aria-controls="port"
+    <a class="nav-link" id="port-tab" data-toggle="tab" href="#port" role="tab" aria-controls="port"
        aria-selected="false">Volume Group</a>
   </li>
   <li class="nav-item">
@@ -20,134 +20,493 @@
   </li>
 </ul>
 <div class="tab-content" id="myTabContent">
+
   <!-- 第一个模块开始 -->
   <!--    创建PV-->
-  <div class="tab-pane fade" id="general" role="tabpanel" aria-labelledby="general-tab">
+  <div class="tab-pane fade  show active" id="general" role="tabpanel" aria-labelledby="general-tab">
     <div style="width:100%; height:330px; background-color: #E7EAED;">
       <br>
       <h4 style="margin-left:30px;">创建PV</h4><hr>
       <div class="form-group">
-        <label for="exampleFormControlSelect1" style="float:left;margin:5px 20px auto 40px">选择磁盘或磁盘分区</label>
-        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+        <label for="selectDiskPartition" style="float:left;margin:5px 20px auto 40px">选择磁盘或磁盘分区</label>
+        <select class="custom-control" onchange="changePVtextarea()" id="selectDiskPartition"
+                style="width:130px;">
+          {% for diskdata in allDiskData %}
+            {% for partition in diskdata['options'] %}
+              <option value="{{ partition }}">{{ partition }}</option>
+            {% endfor %}
+          {% endfor %}
         </select>
       </div>
         <br>
         <div>
         <p style="margin-left:40px; float:left; margin-right: 35px;">已选择的磁盘分区</p>
-        <textarea rows="3" cols="30">
+        <textarea rows="3" cols="30" id="pvtextarea">
         </textarea>
-        <a href="">手动编辑</a>
+        <a href="JavaScript:void(0)" onclick="openDialog()">请点这里</a>
+            <div id="light" class="white_content">
+                <table>
+                    <tr>
+                        <td>aa</td>
+                        <td>bb</td>
+                    </tr>
+                    <tr>
+                        <td>cc</td>
+                        <td>dd</td>
+                    </tr>
+                    <tr>
+                        <td>ee</td>
+                        <td>ff</td>
+                    </tr>
+                </table>
+                <br>
+                <a href="javascript:void(0)" onclick="closeDialog()">点这里关闭本窗口</a>
+            </div>
+            <div id="fade" class="black_overlay"></div>
         </div>
         <hr>
-        <input type="submit" value="确认" style=" margin-left:50px;">
+        <input type="submit" value="确认" style=" margin-left:50px;" onclick="submitpvcreate()">
+        <input type="submit" value="页面刷新" style=" margin-left:50px;" onclick="refreshWeb()">
     </div>
+
 <!--      删除PV-->
       <div style="width:100%; height:330px; background-color: #E7EAED; margin-top:10px;">
         <br>
       <h4 style="margin-left:30px;">删除PV</h4><hr>
       <div class="form-group">
-        <label for="exampleFormControlSelect1" style="float:left;margin:5px 20px auto 40px">选择磁盘或磁盘分区</label>
-        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+        <label for="selectPVDelect" style="float:left;margin:5px 20px auto 40px">选择磁盘或磁盘分区</label>
+        <select class="custom-control" onchange="changePVremovetextarea()" id="selectPVDelect" style="width:150px;">
+          {% for pvname in allPVName %}
+          <option value="{{ pvname }}">{{ pvname }}</option>
+          {% endfor %}
         </select>
       </div>
         <br>
         <div>
         <p style="margin-left:40px; float:left; margin-right: 35px;">已选择的磁盘分区</p>
-        <textarea rows="3" cols="30">
+        <textarea rows="3" cols="30" id="pvremovetextarea">
         </textarea>
         <a href="">手动编辑</a>
         </div>
         <hr>
-        <input type="submit" value="确认" style=" margin-left:50px;">
+        <input type="submit" value="确认" style=" margin-left:50px;" onclick="submitpvremove()">
+        <input type="submit" value="页面刷新" style=" margin-left:50px;" onclick="refreshWeb()">
       </div>
   </div>
   <!-- 第一个模块结束 -->
 
+
+
+
+
   <!-- 第二个模块开始 -->
-  <div class="tab-pane fade show active" id="port" role="tabpanel" aria-labelledby="port-tab">
+  <div class="tab-pane fade" id="port" role="tabpanel" aria-labelledby="port-tab">
     <div style="width:100%; height:350px; background-color: #E7EAED;">
       <br>
       <h4 style="margin-left:30px;">创建VG</h4><hr>
         <div class="form-group">
-        <label for="exampleFormControlSelect1" style="float:left;margin:5px 20px auto 40px">选择PV或磁盘分区</label>
-        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+        <label for="selectVGCreate" style="float:left;margin:5px 20px auto 40px">选择PV或磁盘分区</label>
+        <select class="custom-control" style="width:150px;" onchange="changeVGcreateTextarea()" id="selectVGCreate">
+          {% for pvname in allPVName %}
+          <option value="{{ pvname }}">{{ pvname }}</option>
+          {% endfor %}
         </select>
       </div>
         <div>
         <p style="margin-left:40px; float:left; margin-right: 25px;">已选择的磁盘分区</p>
-        <textarea rows="3" cols="30">
+        <textarea rows="3" cols="30" id="vgcreatetextarea">
         </textarea>
-        <a href="">手动编辑</a>
+
         </div>
         <div>
-        <label for="exampleFormControlSelect1" style="float:left;margin:15px 50px auto 40px">输入VG的名字</label>
-          <input type="text" style="width:200px;margin-top:10px;">
+        <label for="vgCreateName" style="float:left;margin:15px 50px auto 40px">输入VG的名字</label>
+          <input type="text" style="width:200px;margin-top:10px;" id="vgCreateName">
       </div>
         <hr>
-        <input type="submit" value="确认" style=" margin-left:50px; ">
+        <input type="submit" value="确认" style=" margin-left:50px; " onclick="submitvgcreate()">
+        <input type="submit" value="页面刷新" style=" margin-left:50px;" onclick="refreshWeb()">
     </div>
-
 
 <!--    删除VG-->
     <div style="width:100%; height:200px; background-color: #E7EAED; margin-top:10px;">
         <br>
       <h4 style="margin-left:30px;">删除VG</h4><hr>
       <div class="form-group">
-        <label for="exampleFormControlSelect1" style="float:left;margin:5px 35px auto 40px">选择删除的VG</label>
-        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+        <label for="selectVGRemove" style="float:left;margin:5px 35px auto 40px">选择删除的VG</label>
+        <select class="custom-control" id="selectVGRemove" style="width:400px;text-align: center;">
+          {% for vgname in allVGName %}
+          <option value="{{ vgname }}">{{ vgname }}</option>
+          {% endfor %}
         </select>
       </div>
         <hr>
-        <input type="submit" value="确认" style=" margin-left:50px;">
+        <input type="submit" value="确认" style=" margin-left:50px;" onclick="submitvgremove()">
+        <input type="submit" value="页面刷新" style=" margin-left:50px;" onclick="refreshWeb()">
       </div>
 
-    </div>
 
-<!--拓展VG-->
-    <div style="width:100%; height:300px; background-color: #E7EAED; margin-top:10px;">
-    <br>
-      <h4 style="margin-left:30px;">拓展VG</h4><hr>
-      <div class="form-group">
-        <label for="exampleFormControlSelect1" style="float:left;margin:5px 35px auto 40px">选择拓展的VG</label>
-        <select class="custom-control" id="exampleFormControlSelect1" style="width:100px;">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
-        </select>
-      </div>
-    <hr>
-    <input type="submit" value="确认" style=" margin-left:50px;">
-  </div>
+        <!--缩减VG-->
+        <div style="width:100%; height:350px; background-color: #E7EAED; margin-top:10px;">
+            <br>
+            <h4 style="margin-left:30px;">缩减VG</h4>
+            <hr>
+            <div class="form-group">
+                <label for="selectVGReduce" style="float:left;margin:5px 77px auto 40px">选择缩减的VG</label>
+                <select class="custom-control" id="selectVGReduce" style="width:100px;" onclick="changeVGReducetextarea()">
+                  {% for vgname in allVGName %}
+                  <option value="{{ vgname }}">{{ vgname }}</option>
+                  {% endfor %}
+                </select>
+            </div>
+            <div>
+                <p style="margin-left:40px; float:left; margin-right: 25px;">可缩减的PV/磁盘分区</p>
+                <textarea rows="3" cols="30" id="selectVGReducetextarea"></textarea>
+                <div style="margin-top:11px;">
+                    <p style="margin-left:40px; float:left; margin-right: 35px;margin-top:7px;">请选择缩减的PV</p>
+                    <input type="text" style="margin-left:27px;">
+                </div>
+                <hr>
+                <input type="submit" value="确认" style=" margin-left:50px;" onclick="sumbitvgreduce()">
+                <input type="submit" value="页面刷新" style=" margin-left:50px;" onclick="refreshWeb()">
+            </div>
+        </div>
+
+
+      <!--拓展VG-->
+        <div style="width:100%; height:360px; background-color: #E7EAED; margin-top:10px;">
+            <br>
+            <h4 style="margin-left:30px;">拓展VG</h4>
+            <hr>
+            <div class="form-group">
+                <label for="selectVGExtend" style="float:left;margin:5px 145px auto 40px;">选择拓展的VG</label>
+                <select class="custom-control" id="selectVGExtend" style="width:100px;" onclick="changeVGExtendtextarea()">
+                  {% for vgname in allVGName %}
+                  <option value="{{ vgname }}">{{ vgname }}</option>
+                  {% endfor %}
+                </select>
+            </div>
+            <div>
+                <p style="margin-left:40px; float:left; margin-right: 72px;">该VG包含的PV/磁盘分区</p>
+                <textarea rows="2" cols="30" id="vgextendtextarea" readonly></textarea>
+                <input type="hidden" value="" id="VGExtendAllPV">
+                <br>
+                <br>
+                <div>
+                    <form action="" method="get">
+                        <p style="margin-left:40px; float:left; margin-right: 35px;">可增加的PV/磁盘分区(未拥有)</p>
+                        {% for pvname in allPVName %}
+                        <label style="font-size: 15px"><input name="VGExtendpv" type="checkbox"
+                                                              id="selectVGExtendpv" value="{{pvname}}"/>{{ pvname }}
+                        </label>&nbsp;&nbsp;
+                        {% endfor %}
+                    </form>
+                </div>
+
+            </div>
+            <hr>
+            <input type="submit" value="确认" style=" margin-left:50px;" onclick="sumbitvgextend()">
+            <input type="submit" value="页面刷新" style=" margin-left:50px;" onclick="refreshWeb()">
+        </div>
+
   </div>
   <!-- 第二个模块结束 -->
 
   <!-- 第三个模块开始 -->
   <div class="tab-pane fade" id="trafffic" role="tabpanel" aria-labelledby="trafffic-tab">
-    Trafffic Rlues
+    <div style="width:100%; height:405px; background-color: #E7EAED;">
+      <br>
+      <h4 style="margin-left:30px;">创建LV</h4><hr>
+        <div class="form-group">
+        <label for="selectLVCreate" style="float:left;margin:5px 20px auto 40px">选择VG&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+        <select class="custom-control" style="width:150px; margin-left:100px;" onchange="changeLVCreatetextarea()"
+                id="selectLVCreate">
+          {% for vgname in allVGName %}
+          <option value="{{ vgname }}">{{ vgname }}</option>
+          {% endfor %}
+        </select>
+      </div>
+        <div>
+        <p style="margin-left:40px; float:left; margin-right: 25px;">已选择的VG</p>
+        <textarea rows="3" cols="30" id="lvcreatetextarea" style="margin-left:37px;" readonly>
+        </textarea>
+        </div>
+        <div>
+        <label for="lvCreateName" style="float:left;margin:15px 50px auto 40px">输入LV的名字</label>
+          <input type="text" style="width:200px;margin-top:10px;" id="lvCreateName" >
+        </div>
+        <div>
+        <label for="lvCreateSize" style="float:left;margin:15px 50px auto 40px">输入LV的大小</label>
+          <input type="text" style="width:200px;margin-top:10px;" id="lvCreateSize" >
+        </div>
+        <hr>
+        <input type="submit" value="确认" style=" margin-left:50px; " onclick="submitlvcreate()">
+        <input type="submit" value="页面刷新" style=" margin-left:50px;" onclick="refreshWeb()">
+    </div>
   </div>
   <!-- 第三个模块结束 -->
+
+
+<script>
+<!--lv's js-->
+function changeLVCreatetextarea(){
+    var lvCreateSelect = document.getElementById('selectLVCreate');
+    var lvcreateSelectIndex = lvCreateSelect.selectedIndex;
+    var lvcreateSelectValue = lvCreateSelect.options[lvcreateSelectIndex].value;
+    var lvcreatetextarea = document.getElementById('lvcreatetextarea');
+    lvcreatetextarea.value = lvcreateSelectValue;
+}
+
+function submitlvcreate(){
+    var lvCreateName = document.getElementById('lvCreateName');
+    var lvCreateSize = document.getElementById('lvCreateSize');
+    var lvCreatetextarea = document.getElementById('lvcreatetextarea');
+
+    $.ajax({
+      url: "{{url_for('lvm.lvmfunc')}}",
+      type: "GET",
+      data: {
+        lvCreateName : lvCreateName.value,
+        lvCreateSize : lvCreateSize.value,
+        lvCreatedata : lvCreatetextarea.value,
+      },
+      success: function (data) {
+        $.getJSON("{{url_for('lvm.lvmexport')}}",function (data) {
+          alert(data.lvcreateResult)
+          lvCreateName.value=''
+          lvCreateSize.value=''
+        })
+      },
+      error: function () {
+        alert("接收失败")
+        vgCreate.value=''
+      }
+    })
+}
+
+
+
+
+
+<!--vg's  js-->
+var vgSelect = document.getElementById('selectVGCreate');
+var vgcreateSelectIndex = vgSelect.selectedIndex;
+var vgcreateSelectValue = vgSelect.options[vgcreateSelectIndex].value;
+var vgcreatextarea = document.getElementById('vgcreatetextarea');
+vgcreatextarea.value = vgcreateSelectValue;
+var vgCreate = document.getElementById('vgCreateName');
+
+
+function changeVGcreateTextarea(){
+    var vgSelect = document.getElementById('selectVGCreate');
+    var vgcreateSelectIndex = vgSelect.selectedIndex;
+    var vgcreateSelectValue = vgSelect.options[vgcreateSelectIndex].value;
+    var vgcreatextarea = document.getElementById('vgcreatetextarea');
+    vgcreatetextarea.value=vgcreateSelectValue;
+}
+
+function submitvgcreate(){
+    var vgcreatedata = vgcreatetextarea.value
+    var vgCreateName = vgCreate.value
+    $.ajax({
+      url: "{{url_for('lvm.lvmfunc')}}",
+      type: "GET",
+      data: {
+        vgCreateName : vgCreateName,
+        vgcreatedata : vgcreatedata,
+      },
+      success: function (data) {
+        $.getJSON("{{url_for('lvm.lvmexport')}}",function (data) {
+          alert(data.vgcreateResult)
+          vgCreate.value=''
+        })
+      },
+      error: function () {
+        alert("接收失败")
+        vgCreate.value=''
+      }
+    })
+}
+
+function submitvgremove(){
+    var vgremoveSelect = document.getElementById('selectVGRemove');
+    var vgremoveSelectIndex = vgremoveSelect.selectedIndex;
+    var vgremovedata = vgremoveSelect.options[vgremoveSelectIndex].value;
+    $.ajax({
+      url: "{{url_for('lvm.lvmfunc')}}",
+      type: "GET",
+      data: {
+        vgremovedata : vgremovedata,
+      },
+      success: function (data) {
+        $.getJSON("{{url_for('lvm.lvmexport')}}",function (data) {
+          alert(data.vgremoveResult)
+        })
+      },
+      error: function () {
+        alert("接收失败")
+        vgCreate.value=''
+      }
+    })
+}
+
+function changeVGExtendtextarea(){
+    var vgextendSelect = document.getElementById('selectVGExtend');
+    var vgextendSelectIndex = vgextendSelect.selectedIndex;
+    var vgextendVGName = vgextendSelect.options[vgextendSelectIndex].value;
+     $.ajax({
+      url: "{{url_for('lvm.lvmfunc')}}",
+      type: "GET",
+      data: {
+        vgextenddata : vgextendVGName,
+      },
+      success: function (data) {
+        $.getJSON("{{url_for('lvm.lvmexport')}}",function (data) {
+          var vgextendtextarea = document.getElementById('vgextendtextarea');
+          vgextendtextarea.value = data.vgAllPVName;
+        })
+      },
+      error: function () {
+        alert("接收失败")
+      }
+    })
+}
+
+
+function sumbitvgextend(){
+    var vgextendSelect = document.getElementById('selectVGExtend');
+    var vgextendSelectIndex = vgextendSelect.selectedIndex;
+    var vgextendVGName = vgextendSelect.options[vgextendSelectIndex].value;
+    var vgextendInput = document.getElementById('selectVGExtendpv');
+    var vgextendPV = vgextendInput.value
+    alert(vgextendVGName + "  fail extended")
+}
+
+function sumbitvgreduce(){
+    var vgreduceSelect = document.getElementById('selectVGReduce');
+    var vgreduceSelectIndex = vgreduceSelect.selectedIndex;
+    var vgreduceVGName = vgreduceSelect.options[vgreduceSelectIndex].value;
+    var vgreducetextarea = document.getElementById('selectVGReducetextarea');
+    var vgreducevalue = vgreducetextarea.value
+    alert(vgreducevalue + "  fail reduceed")
+}
+
+function changeVGReducetextarea(){
+    var vgreduceSelect = document.getElementById('selectVGReduce');
+    var vgreduceSelectIndex = vgreduceSelect.selectedIndex;
+    var vgreduceVGName = vgreduceSelect.options[vgreduceSelectIndex].value;
+     $.ajax({
+      url: "{{url_for('lvm.lvmfunc')}}",
+      type: "GET",
+      data: {
+        vgextenddata : vgreduceVGName,
+      },
+      success: function (data) {
+        $.getJSON("{{url_for('lvm.lvmexport')}}",function (data) {
+          var vgreducetextarea = document.getElementById('selectVGReducetextarea');
+          vgreducetextarea.value = data.vgAllPVName;
+        })
+      },
+      error: function () {
+        alert("接收失败")
+      }
+    })
+}
+
+
+<!--pv's  js-->
+var pvSelect = document.getElementById('selectDiskPartition');
+var pvSelectIndex = pvSelect.selectedIndex;
+var pvSelectValue = pvSelect.options[pvSelectIndex].value;
+var pvtext = document.getElementById('pvtextarea');
+pvtext.value=pvSelectValue;
+
+var pvremoveSelect = document.getElementById('selectPVDelect');
+var pvremoveSelectIndex = pvremoveSelect.selectedIndex;
+var pvremoveSelectValue = pvremoveSelect.options[pvremoveSelectIndex].value;
+var pvremovetext = document.getElementById('pvremovetextarea');
+pvremovetext.value=pvremoveSelectValue;
+
+function changePVtextarea(){
+    var pvSelect = document.getElementById('selectDiskPartition');
+    var pvSelectIndex = pvSelect.selectedIndex;
+    var pvSelectValue = pvSelect.options[pvSelectIndex].value;
+    var pvtext = document.getElementById('pvtextarea');
+    pvtext.value=pvSelectValue;
+}
+
+function submitpvcreate(){
+    var pvcreatedata = pvtext.value
+    $.ajax({
+      url: "{{url_for('lvm.lvmfunc')}}",
+      type: "GET",
+      data: {
+        pvcreatedata: pvcreatedata,
+      },
+      success: function (data) {
+        $.getJSON("{{url_for('lvm.lvmexport')}}",function (data) {
+          alert(data.pvcreateResult)
+        })
+      },
+      error: function () {
+        alert("接收失败")
+      }
+    })
+}
+
+function changePVremovetextarea(){
+    var pvremoveSelect = document.getElementById('selectPVDelect');
+    var pvremoveSelectIndex = pvremoveSelect.selectedIndex;
+    var pvremoveSelectValue = pvremoveSelect.options[pvremoveSelectIndex].value;
+    var pvremovetext = document.getElementById('pvremovetextarea');
+    pvremovetext.value=pvremoveSelectValue;
+}
+
+function submitpvremove(){
+    var pvremovedata = pvremovetext.value
+    $.ajax({
+      url: "{{url_for('lvm.lvmfunc')}}",
+      type: "GET",
+      data: {
+        pvremovedata: pvremovedata,
+      },
+      success: function (data) {
+        $.getJSON("{{url_for('lvm.lvmexport')}}",function (data) {
+          alert(data.pvremoveResult)
+          setTimeout(function(){  //使用  setTimeout（）方法设定定时2000毫秒
+            window.location.reload();//页面刷新
+            },2000);
+
+        })
+      },
+      error: function () {
+        alert("接收失败")
+      }
+    })
+}
+
+
+
+
+<!--other's jf-->
+function openDialog() {
+    document.getElementById('light').style.display = 'block';
+    document.getElementById('fade').style.display = 'block';
+}
+
+function closeDialog() {
+    document.getElementById('light').style.display = 'none';
+    document.getElementById('fade').style.display = 'none';
+}
+
+function refreshWeb(){
+    setTimeout(function(){  //使用  setTimeout（）方法设定定时2000毫秒
+        window.location.reload();//页面刷新
+        },100);
+}
+
+
+</script>
 
 </div>
 </div>
